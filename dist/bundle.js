@@ -45,10 +45,10 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(1);
-	__webpack_require__(8);
-	__webpack_require__(11);
-	__webpack_require__(13);
-	__webpack_require__(19);
+	__webpack_require__(7);
+	__webpack_require__(10);
+	__webpack_require__(12);
+	__webpack_require__(18);
 	__webpack_require__(22);
 	__webpack_require__(23);
 	
@@ -63,15 +63,9 @@
 	var game = {
 		names: ['billy', 'bob', 'mark', 'randy', 'sheffer'],
 		opponents: [],
+	
 		defineGunmanSkill: function(){
-	
-	
-			// 0.5 - 1.5
-	
-	
-			var rnd = Math.floor( (0.5 + Math.random()) * 1000 );
-			return rnd;
-	
+			return Math.floor( (1.5 + Math.random()) * 1000 );
 		},
 	
 		randomTrueOrFalse : function(){
@@ -93,15 +87,16 @@
 		showStats: function(){
 			setTimeout(function () {
 				var statElement = document.querySelector('#opponentStats');
-				game.opponents.forEach( function(opp) {
-					aDiv = document.createElement('div');
-					aDiv.innerHTML = (opp.skill / 1000).toPrecision(3);
-					aDiv.id = 'stats-' + opp.domElement.id;
-					aDiv.className = 'skillsOptions';
-					aDiv.style.left = opp.domElement.style.left;
-					statElement.appendChild(aDiv);
 	
-				});
+					game.opponents.forEach( function(opp) {
+						aDiv = document.createElement('div');
+						aDiv.innerHTML = (opp.skill / 1000).toPrecision(3);
+						aDiv.id = 'stats-' + opp.domElement.id;
+						aDiv.className = 'skillsOptions';
+						aDiv.style.left = opp.domElement.style.left;
+						statElement.appendChild(aDiv);
+					});
+	
 			}, 25);
 		},
 	
@@ -151,6 +146,8 @@
 	
 	var gamePlay = {
 	
+		turn : 0,
+	
 	
 		checkIfInGame : function () {
 			var flag = true;
@@ -171,6 +168,7 @@
 						clearTimeout(gamePlay.timer);
 						console.log('you lose!');
 	
+	
 						canvas.winLose.style.visibility = 'visible';
 						canvas.winLose.innerHTML = 'you lose!';
 	
@@ -189,6 +187,8 @@
 	
 						game.opponentsWaitThenDo(10, 'talk');
 						game.opponentsWaitThenDo(3500, 'walkOut');
+	
+	
 					}
 	
 					else{
@@ -208,6 +208,7 @@
 							canvas.domElement.removeEventListener('click', gamePlay.shootPhase, true);
 							sounds.playNewStopOld('youWon');
 	
+							gamePlay.turn += 1;
 							setTimeout(newRound , 2500);
 						}
 						else {
@@ -238,7 +239,7 @@
 				points.killedTime.push(killedOpponent.skill - killingTime);
 	
 	
-				killedOpponent.gunmanSayDomElement.innerHTML = 'My ' + killedBodyPart + '!';
+				killedOpponent.gunmanSayDomElement.innerHTML = killedBodyPart + ' ' + points[killedBodyPart] + ' pts';
 	
 				console.log('you hit ' + killedBodyPart + ' ' + points[killedBodyPart] + 'pts');
 	
@@ -299,7 +300,7 @@
 		resolveKilledTimePoints: function(){
 	
 			points.killedTime.forEach(function(pts){
-				var ppp = Math.round(pts / 100);
+				var ppp = Math.round(pts / 50);
 				points.amount += ppp;
 				console.log('time pts ' + ppp + 'pts');
 			});
@@ -407,13 +408,16 @@
 	function Opponent(name, position){
 		this.name = name;
 		this.skill = game.defineGunmanSkill();
-		console.log(  );
 		this.position = position;
 		this.init();
 	
 	}
 	
+	
+	
 	function clearOldData(){
+	
+		points.killedTime = [];
 	
 		gamePlay.gameDurationMs = 0;
 		points.myStatsDivElement.innerHTML = 'time 00.00';
@@ -434,12 +438,17 @@
 	
 	
 	function newRound(){
-	clearOldData();
+		console.log('---------------------------');
+		console.log('game turn', gamePlay.turn % game.names.length + 1);
+	
+	
+		clearOldData();
 	
 	
 	
 	
-		game.spawnOpponents(1);
+	
+		game.spawnOpponents(gamePlay.turn % game.names.length + 1);
 		game.showStats();
 	
 		// each opponent perform action after the specified delay in ms
@@ -481,7 +490,7 @@
 	var content = __webpack_require__(2);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(7)(content, {});
+	var update = __webpack_require__(6)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -506,7 +515,7 @@
 	
 	
 	// module
-	exports.push([module.id, "@font-face {\n  font-family: homestead;\n  src: url(" + __webpack_require__(4) + "); }\n\n@font-face {\n  font-family: homesteadInline;\n  src: url(" + __webpack_require__(5) + "); }\n\nbody {\n  background-color: black; }\n\n.winLose {\n  visibility: hidden;\n  position: absolute;\n  background-color: white;\n  transform: translate(-50%, -50%);\n  left: 50%;\n  top: 25%;\n  font-size: 22px;\n  font-family: homesteadInline;\n  line-height: calc(68px * 1);\n  text-align: center;\n  width: calc(116px * 1.3);\n  height: calc(68px * 1.3);\n  background: url(" + __webpack_require__(6) + ") no-repeat center center;\n  background-size: contain; }\n\n.shooter {\n  position: absolute;\n  top: 80%;\n  transform: translate(-50%, -100%);\n  z-index: 5000;\n  transition: left 3.5s ease-out; }\n\n.hat {\n  position: fixed;\n  transform: translate(-50%, -50%);\n  left: 50%;\n  animation: 1s forwards ease-in;\n  z-index: -5000; }\n\n@keyframes flying-hat-right {\n  0% {\n    transform: rotate(0deg); }\n  50% {\n    top: -100%; }\n  100% {\n    left: 300%;\n    transform: rotate(1080deg); } }\n\n@keyframes flying-hat-left {\n  0% {\n    transform: rotate(0deg); }\n  50% {\n    top: -100%; }\n  100% {\n    left: -300%;\n    transform: rotate(1080deg); } }\n\nsvg {\n  fill-opacity: 0.5; }\n  svg #head {\n    fill: red; }\n  svg #arm {\n    fill: green; }\n  svg #belly {\n    fill: yellow; }\n  svg #leg {\n    fill: navy; }\n", ""]);
+	exports.push([module.id, "@font-face {\n  font-family: homestead;\n  src: url(" + __webpack_require__(4) + "); }\n\n@font-face {\n  font-family: homesteadInline;\n  src: url(" + __webpack_require__(5) + "); }\n\nbody {\n  background-color: black; }\n\n.shooter {\n  position: absolute;\n  top: 80%;\n  transform: translate(-50%, -100%);\n  z-index: 5000;\n  transition: left 3.5s ease-out; }\n\n.hat {\n  position: fixed;\n  transform: translate(-50%, -50%);\n  left: 50%;\n  animation: 1s forwards ease-in;\n  z-index: -5000; }\n\n@keyframes flying-hat-right {\n  0% {\n    transform: rotate(0deg); }\n  50% {\n    top: -100%; }\n  100% {\n    left: 300%;\n    transform: rotate(1080deg); } }\n\n@keyframes flying-hat-left {\n  0% {\n    transform: rotate(0deg); }\n  50% {\n    top: -100%; }\n  100% {\n    left: -300%;\n    transform: rotate(1080deg); } }\n\nsvg {\n  fill-opacity: 0; }\n  svg #head {\n    fill: red; }\n  svg #arm {\n    fill: green; }\n  svg #belly {\n    fill: yellow; }\n  svg #leg {\n    fill: navy; }\n", ""]);
 	
 	// exports
 
@@ -581,12 +590,6 @@
 
 /***/ },
 /* 6 */
-/***/ function(module, exports) {
-
-	module.exports = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHQAAABECAYAAABQ4BGKAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH3wwNDSY2HJq0aAAAAS5JREFUeNrt3EEOgkAQRFHHcP8rjysTMtEIJIDV8/5aFlB8qtsQWu/9gTo8XYJaLEcPbK1R+0R6742h2G7oaKTuPZcP17sxdMYb4Zdp7zuFkbcbu8lUhs5iKDMzTWVodUOZmW0qQ4shUIEiokN1Z40uZahHLgQKgUKgEKhAkbKHrvYa+2jg/snQWQxlaqaZDNWh0KG4z1Bm1jCVof5YgEAhUAgUAhUoUvbQ1V5jHw3cPxnqkQuB4v4O1aWZ3cnQ2QwdTX3D2P80k6GzGqpbM8xkKEN16xUmjuz95h9DGbrNWOzj6Nc3GcrQmCnwlN+nwdBiLOknsHqv2LTNUIFCoDDlXjD1Vu1chppyTb0MhQ69qlOrmcxQhmabOnZtNVMZasrNnn6/GWvKhQ4FQ7GTFyp1zjx+IK1vAAAAAElFTkSuQmCC"
-
-/***/ },
-/* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*
@@ -840,16 +843,16 @@
 
 
 /***/ },
-/* 8 */
+/* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 	
 	// load the styles
-	var content = __webpack_require__(9);
+	var content = __webpack_require__(8);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(7)(content, {});
+	var update = __webpack_require__(6)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -866,7 +869,7 @@
 	}
 
 /***/ },
-/* 9 */
+/* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(3)();
@@ -874,28 +877,28 @@
 	
 	
 	// module
-	exports.push([module.id, ".icon-sheffer-hat {\n  display: inline-block;\n  background-position: 0px 0px;\n  width: 42px;\n  height: 36px;\n  background-image: url(" + __webpack_require__(10) + ");\n}\n\n.icon-randy-hat {\n  display: inline-block;\n  background-position: -42px 0px;\n  width: 52px;\n  height: 40px;\n  background-image: url(" + __webpack_require__(10) + ");\n}\n\n.icon-bob-aim {\n  display: inline-block;\n  background-position: -94px 0px;\n  width: 52px;\n  height: 152px;\n  background-image: url(" + __webpack_require__(10) + ");\n}\n\n.icon-bob-talk-a {\n  display: inline-block;\n  background-position: -146px 0px;\n  width: 52px;\n  height: 152px;\n  background-image: url(" + __webpack_require__(10) + ");\n}\n\n.icon-bob-talk-b {\n  display: inline-block;\n  background-position: -198px 0px;\n  width: 52px;\n  height: 152px;\n  background-image: url(" + __webpack_require__(10) + ");\n}\n\n.icon-sheffer-stand {\n  display: inline-block;\n  background-position: -250px 0px;\n  width: 56px;\n  height: 164px;\n  background-image: url(" + __webpack_require__(10) + ");\n}\n\n.icon-sheffer-walk-b {\n  display: inline-block;\n  background-position: -306px 0px;\n  width: 56px;\n  height: 164px;\n  background-image: url(" + __webpack_require__(10) + ");\n}\n\n.icon-sheffer-walk-a {\n  display: inline-block;\n  background-position: -362px 0px;\n  width: 56px;\n  height: 164px;\n  background-image: url(" + __webpack_require__(10) + ");\n}\n\n.icon-billy-hat {\n  display: inline-block;\n  background-position: -418px 0px;\n  width: 56px;\n  height: 22px;\n  background-image: url(" + __webpack_require__(10) + ");\n}\n\n.icon-sheffer-talk-b {\n  display: inline-block;\n  background-position: -474px 0px;\n  width: 60px;\n  height: 164px;\n  background-image: url(" + __webpack_require__(10) + ");\n}\n\n.icon-sheffer-talk-a {\n  display: inline-block;\n  background-position: -534px 0px;\n  width: 60px;\n  height: 164px;\n  background-image: url(" + __webpack_require__(10) + ");\n}\n\n.icon-sheffer-aim {\n  display: inline-block;\n  background-position: -594px 0px;\n  width: 60px;\n  height: 164px;\n  background-image: url(" + __webpack_require__(10) + ");\n}\n\n.icon-sheffer-unholster {\n  display: inline-block;\n  background-position: -654px 0px;\n  width: 60px;\n  height: 164px;\n  background-image: url(" + __webpack_require__(10) + ");\n}\n\n.icon-bob-stand {\n  display: inline-block;\n  background-position: -714px 0px;\n  width: 68px;\n  height: 154px;\n  background-image: url(" + __webpack_require__(10) + ");\n}\n\n.icon-bob-fall {\n  display: inline-block;\n  background-position: -782px 0px;\n  width: 68px;\n  height: 154px;\n  background-image: url(" + __webpack_require__(10) + ");\n}\n\n.icon-mark-hat {\n  display: inline-block;\n  background-position: -850px 0px;\n  width: 68px;\n  height: 52px;\n  background-image: url(" + __webpack_require__(10) + ");\n}\n\n.icon-sheffer-fall {\n  display: inline-block;\n  background-position: -918px 0px;\n  width: 68px;\n  height: 164px;\n  background-image: url(" + __webpack_require__(10) + ");\n}\n\n.icon-billy-talk-b {\n  display: inline-block;\n  background-position: -986px 0px;\n  width: 72px;\n  height: 126px;\n  background-image: url(" + __webpack_require__(10) + ");\n}\n\n.icon-billy-unholster {\n  display: inline-block;\n  background-position: -1058px 0px;\n  width: 72px;\n  height: 130px;\n  background-image: url(" + __webpack_require__(10) + ");\n}\n\n.icon-billy-walk-a {\n  display: inline-block;\n  background-position: -1130px 0px;\n  width: 72px;\n  height: 132px;\n  background-image: url(" + __webpack_require__(10) + ");\n}\n\n.icon-billy-walk-b {\n  display: inline-block;\n  background-position: -1202px 0px;\n  width: 72px;\n  height: 132px;\n  background-image: url(" + __webpack_require__(10) + ");\n}\n\n.icon-billy-aim {\n  display: inline-block;\n  background-position: -1274px 0px;\n  width: 72px;\n  height: 126px;\n  background-image: url(" + __webpack_require__(10) + ");\n}\n\n.icon-billy-fall {\n  display: inline-block;\n  background-position: -1346px 0px;\n  width: 72px;\n  height: 74px;\n  background-image: url(" + __webpack_require__(10) + ");\n}\n\n.icon-billy-talk-a {\n  display: inline-block;\n  background-position: -1418px 0px;\n  width: 72px;\n  height: 126px;\n  background-image: url(" + __webpack_require__(10) + ");\n}\n\n.icon-randy-walk-b {\n  display: inline-block;\n  background-position: -1490px 0px;\n  width: 74px;\n  height: 150px;\n  background-image: url(" + __webpack_require__(10) + ");\n}\n\n.icon-billy-stand {\n  display: inline-block;\n  background-position: -1564px 0px;\n  width: 76px;\n  height: 132px;\n  background-image: url(" + __webpack_require__(10) + ");\n}\n\n.icon-randy-fall {\n  display: inline-block;\n  background-position: -1640px 0px;\n  width: 76px;\n  height: 58px;\n  background-image: url(" + __webpack_require__(10) + ");\n}\n\n.icon-randy-stand {\n  display: inline-block;\n  background-position: -1716px 0px;\n  width: 76px;\n  height: 150px;\n  background-image: url(" + __webpack_require__(10) + ");\n}\n\n.icon-randy-talk-a {\n  display: inline-block;\n  background-position: -1792px 0px;\n  width: 76px;\n  height: 150px;\n  background-image: url(" + __webpack_require__(10) + ");\n}\n\n.icon-randy-talk-b {\n  display: inline-block;\n  background-position: -1868px 0px;\n  width: 76px;\n  height: 150px;\n  background-image: url(" + __webpack_require__(10) + ");\n}\n\n.icon-randy-aim {\n  display: inline-block;\n  background-position: -1944px 0px;\n  width: 76px;\n  height: 150px;\n  background-image: url(" + __webpack_require__(10) + ");\n}\n\n.icon-randy-walk-a {\n  display: inline-block;\n  background-position: -2020px 0px;\n  width: 76px;\n  height: 150px;\n  background-image: url(" + __webpack_require__(10) + ");\n}\n\n.icon-mark-fall {\n  display: inline-block;\n  background-position: -2096px 0px;\n  width: 76px;\n  height: 54px;\n  background-image: url(" + __webpack_require__(10) + ");\n}\n\n.icon-randy-unholster {\n  display: inline-block;\n  background-position: -2172px 0px;\n  width: 76px;\n  height: 150px;\n  background-image: url(" + __webpack_require__(10) + ");\n}\n\n.icon-bob-walk-b {\n  display: inline-block;\n  background-position: -2248px 0px;\n  width: 80px;\n  height: 150px;\n  background-image: url(" + __webpack_require__(10) + ");\n}\n\n.icon-bob-walk-a {\n  display: inline-block;\n  background-position: -2328px 0px;\n  width: 80px;\n  height: 150px;\n  background-image: url(" + __webpack_require__(10) + ");\n}\n\n.icon-bob-unholster {\n  display: inline-block;\n  background-position: -2408px 0px;\n  width: 80px;\n  height: 148px;\n  background-image: url(" + __webpack_require__(10) + ");\n}\n\n.icon-mark-unholster {\n  display: inline-block;\n  background-position: -2488px 0px;\n  width: 82px;\n  height: 146px;\n  background-image: url(" + __webpack_require__(10) + ");\n}\n\n.icon-mark-aim {\n  display: inline-block;\n  background-position: -2570px 0px;\n  width: 82px;\n  height: 146px;\n  background-image: url(" + __webpack_require__(10) + ");\n}\n\n.icon-mark-walk-a {\n  display: inline-block;\n  background-position: -2652px 0px;\n  width: 82px;\n  height: 146px;\n  background-image: url(" + __webpack_require__(10) + ");\n}\n\n.icon-mark-walk-b {\n  display: inline-block;\n  background-position: -2734px 0px;\n  width: 82px;\n  height: 146px;\n  background-image: url(" + __webpack_require__(10) + ");\n}\n\n.icon-mark-talk-a {\n  display: inline-block;\n  background-position: -2816px 0px;\n  width: 82px;\n  height: 146px;\n  background-image: url(" + __webpack_require__(10) + ");\n}\n\n.icon-mark-stand {\n  display: inline-block;\n  background-position: -2898px 0px;\n  width: 82px;\n  height: 146px;\n  background-image: url(" + __webpack_require__(10) + ");\n}\n\n.icon-mark-talk-b {\n  display: inline-block;\n  background-position: -2980px 0px;\n  width: 82px;\n  height: 146px;\n  background-image: url(" + __webpack_require__(10) + ");\n}\n\n", ""]);
+	exports.push([module.id, ".icon-sheffer-hat {\n  display: inline-block;\n  background-position: 0px 0px;\n  width: 42px;\n  height: 36px;\n  background-image: url(" + __webpack_require__(9) + ");\n}\n\n.icon-randy-hat {\n  display: inline-block;\n  background-position: -42px 0px;\n  width: 52px;\n  height: 40px;\n  background-image: url(" + __webpack_require__(9) + ");\n}\n\n.icon-bob-aim {\n  display: inline-block;\n  background-position: -94px 0px;\n  width: 52px;\n  height: 152px;\n  background-image: url(" + __webpack_require__(9) + ");\n}\n\n.icon-bob-talk-a {\n  display: inline-block;\n  background-position: -146px 0px;\n  width: 52px;\n  height: 152px;\n  background-image: url(" + __webpack_require__(9) + ");\n}\n\n.icon-bob-talk-b {\n  display: inline-block;\n  background-position: -198px 0px;\n  width: 52px;\n  height: 152px;\n  background-image: url(" + __webpack_require__(9) + ");\n}\n\n.icon-sheffer-stand {\n  display: inline-block;\n  background-position: -250px 0px;\n  width: 56px;\n  height: 164px;\n  background-image: url(" + __webpack_require__(9) + ");\n}\n\n.icon-sheffer-walk-b {\n  display: inline-block;\n  background-position: -306px 0px;\n  width: 56px;\n  height: 164px;\n  background-image: url(" + __webpack_require__(9) + ");\n}\n\n.icon-sheffer-walk-a {\n  display: inline-block;\n  background-position: -362px 0px;\n  width: 56px;\n  height: 164px;\n  background-image: url(" + __webpack_require__(9) + ");\n}\n\n.icon-billy-hat {\n  display: inline-block;\n  background-position: -418px 0px;\n  width: 56px;\n  height: 22px;\n  background-image: url(" + __webpack_require__(9) + ");\n}\n\n.icon-sheffer-talk-b {\n  display: inline-block;\n  background-position: -474px 0px;\n  width: 60px;\n  height: 164px;\n  background-image: url(" + __webpack_require__(9) + ");\n}\n\n.icon-sheffer-talk-a {\n  display: inline-block;\n  background-position: -534px 0px;\n  width: 60px;\n  height: 164px;\n  background-image: url(" + __webpack_require__(9) + ");\n}\n\n.icon-sheffer-aim {\n  display: inline-block;\n  background-position: -594px 0px;\n  width: 60px;\n  height: 164px;\n  background-image: url(" + __webpack_require__(9) + ");\n}\n\n.icon-sheffer-unholster {\n  display: inline-block;\n  background-position: -654px 0px;\n  width: 60px;\n  height: 164px;\n  background-image: url(" + __webpack_require__(9) + ");\n}\n\n.icon-bob-stand {\n  display: inline-block;\n  background-position: -714px 0px;\n  width: 68px;\n  height: 154px;\n  background-image: url(" + __webpack_require__(9) + ");\n}\n\n.icon-bob-fall {\n  display: inline-block;\n  background-position: -782px 0px;\n  width: 68px;\n  height: 154px;\n  background-image: url(" + __webpack_require__(9) + ");\n}\n\n.icon-mark-hat {\n  display: inline-block;\n  background-position: -850px 0px;\n  width: 68px;\n  height: 52px;\n  background-image: url(" + __webpack_require__(9) + ");\n}\n\n.icon-sheffer-fall {\n  display: inline-block;\n  background-position: -918px 0px;\n  width: 68px;\n  height: 164px;\n  background-image: url(" + __webpack_require__(9) + ");\n}\n\n.icon-billy-talk-b {\n  display: inline-block;\n  background-position: -986px 0px;\n  width: 72px;\n  height: 126px;\n  background-image: url(" + __webpack_require__(9) + ");\n}\n\n.icon-billy-unholster {\n  display: inline-block;\n  background-position: -1058px 0px;\n  width: 72px;\n  height: 130px;\n  background-image: url(" + __webpack_require__(9) + ");\n}\n\n.icon-billy-walk-a {\n  display: inline-block;\n  background-position: -1130px 0px;\n  width: 72px;\n  height: 132px;\n  background-image: url(" + __webpack_require__(9) + ");\n}\n\n.icon-billy-walk-b {\n  display: inline-block;\n  background-position: -1202px 0px;\n  width: 72px;\n  height: 132px;\n  background-image: url(" + __webpack_require__(9) + ");\n}\n\n.icon-billy-aim {\n  display: inline-block;\n  background-position: -1274px 0px;\n  width: 72px;\n  height: 126px;\n  background-image: url(" + __webpack_require__(9) + ");\n}\n\n.icon-billy-fall {\n  display: inline-block;\n  background-position: -1346px 0px;\n  width: 72px;\n  height: 74px;\n  background-image: url(" + __webpack_require__(9) + ");\n}\n\n.icon-billy-talk-a {\n  display: inline-block;\n  background-position: -1418px 0px;\n  width: 72px;\n  height: 126px;\n  background-image: url(" + __webpack_require__(9) + ");\n}\n\n.icon-randy-walk-b {\n  display: inline-block;\n  background-position: -1490px 0px;\n  width: 74px;\n  height: 150px;\n  background-image: url(" + __webpack_require__(9) + ");\n}\n\n.icon-billy-stand {\n  display: inline-block;\n  background-position: -1564px 0px;\n  width: 76px;\n  height: 132px;\n  background-image: url(" + __webpack_require__(9) + ");\n}\n\n.icon-randy-fall {\n  display: inline-block;\n  background-position: -1640px 0px;\n  width: 76px;\n  height: 58px;\n  background-image: url(" + __webpack_require__(9) + ");\n}\n\n.icon-randy-stand {\n  display: inline-block;\n  background-position: -1716px 0px;\n  width: 76px;\n  height: 150px;\n  background-image: url(" + __webpack_require__(9) + ");\n}\n\n.icon-randy-talk-a {\n  display: inline-block;\n  background-position: -1792px 0px;\n  width: 76px;\n  height: 150px;\n  background-image: url(" + __webpack_require__(9) + ");\n}\n\n.icon-randy-talk-b {\n  display: inline-block;\n  background-position: -1868px 0px;\n  width: 76px;\n  height: 150px;\n  background-image: url(" + __webpack_require__(9) + ");\n}\n\n.icon-randy-aim {\n  display: inline-block;\n  background-position: -1944px 0px;\n  width: 76px;\n  height: 150px;\n  background-image: url(" + __webpack_require__(9) + ");\n}\n\n.icon-randy-walk-a {\n  display: inline-block;\n  background-position: -2020px 0px;\n  width: 76px;\n  height: 150px;\n  background-image: url(" + __webpack_require__(9) + ");\n}\n\n.icon-mark-fall {\n  display: inline-block;\n  background-position: -2096px 0px;\n  width: 76px;\n  height: 54px;\n  background-image: url(" + __webpack_require__(9) + ");\n}\n\n.icon-randy-unholster {\n  display: inline-block;\n  background-position: -2172px 0px;\n  width: 76px;\n  height: 150px;\n  background-image: url(" + __webpack_require__(9) + ");\n}\n\n.icon-bob-walk-b {\n  display: inline-block;\n  background-position: -2248px 0px;\n  width: 80px;\n  height: 150px;\n  background-image: url(" + __webpack_require__(9) + ");\n}\n\n.icon-bob-walk-a {\n  display: inline-block;\n  background-position: -2328px 0px;\n  width: 80px;\n  height: 150px;\n  background-image: url(" + __webpack_require__(9) + ");\n}\n\n.icon-bob-unholster {\n  display: inline-block;\n  background-position: -2408px 0px;\n  width: 80px;\n  height: 148px;\n  background-image: url(" + __webpack_require__(9) + ");\n}\n\n.icon-mark-unholster {\n  display: inline-block;\n  background-position: -2488px 0px;\n  width: 82px;\n  height: 146px;\n  background-image: url(" + __webpack_require__(9) + ");\n}\n\n.icon-mark-aim {\n  display: inline-block;\n  background-position: -2570px 0px;\n  width: 82px;\n  height: 146px;\n  background-image: url(" + __webpack_require__(9) + ");\n}\n\n.icon-mark-walk-a {\n  display: inline-block;\n  background-position: -2652px 0px;\n  width: 82px;\n  height: 146px;\n  background-image: url(" + __webpack_require__(9) + ");\n}\n\n.icon-mark-walk-b {\n  display: inline-block;\n  background-position: -2734px 0px;\n  width: 82px;\n  height: 146px;\n  background-image: url(" + __webpack_require__(9) + ");\n}\n\n.icon-mark-talk-a {\n  display: inline-block;\n  background-position: -2816px 0px;\n  width: 82px;\n  height: 146px;\n  background-image: url(" + __webpack_require__(9) + ");\n}\n\n.icon-mark-stand {\n  display: inline-block;\n  background-position: -2898px 0px;\n  width: 82px;\n  height: 146px;\n  background-image: url(" + __webpack_require__(9) + ");\n}\n\n.icon-mark-talk-b {\n  display: inline-block;\n  background-position: -2980px 0px;\n  width: 82px;\n  height: 146px;\n  background-image: url(" + __webpack_require__(9) + ");\n}\n\n", ""]);
 	
 	// exports
 
 
 /***/ },
-/* 10 */
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = __webpack_require__.p + "./dist/images/sprite-base.png?9a03e29737484cfcbbcd6163cbdd23df";
 
 /***/ },
-/* 11 */
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 	
 	// load the styles
-	var content = __webpack_require__(12);
+	var content = __webpack_require__(11);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(7)(content, {});
+	var update = __webpack_require__(6)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -912,7 +915,7 @@
 	}
 
 /***/ },
-/* 12 */
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(3)();
@@ -920,22 +923,22 @@
 	
 	
 	// module
-	exports.push([module.id, "\n\n\n.icon-bob-talk {\n    display: inline-block;\n    background-image: url(" + __webpack_require__(10) + ");\n    width: 52px;\n    height: 152px;\n\tanimation: bob-talk 0.5s steps(2) infinite;\n}\n\n@keyframes bob-talk{\n\t0% {\n        background-position: -146px 0px;\n    }\n\t100% {\n        background-position: -250px 0px;\n    }\n}\n\n.icon-sheffer-walk{\n    display: inline-block;\n    background-image: url(" + __webpack_require__(10) + ");\n    width: 56px;\n    height: 164px;\n\tanimation: sheffer-walk 0.35s steps(2) infinite;\n}\n\n@keyframes sheffer-walk{\n\t0% {\n        background-position: -306px 0px;\n    }\n\t100% {\n        background-position: -418px 0px;\n    }\n}\n\n\n.icon-sheffer-talk {\n    display: inline-block;\n    background-image: url(" + __webpack_require__(10) + ");\n    width: 60px;\n    height: 164px;\n\tanimation: sheffer-talk 0.5s steps(2) infinite;\n}\n\n@keyframes sheffer-talk{\n\t0% {\n        background-position: -474px 0px;\n    }\n\t100% {\n        background-position: -594px 0px;\n    }\n}\n\n\n.icon-billy-talk {\n    display: inline-block;\n    background-image: url(" + __webpack_require__(10) + ");\n    width: 72px;\n    height: 126px;\n\tanimation: billy-talk 0.5s steps(2) infinite;\n}\n\n@keyframes billy-talk{\n\t0% {\n        background-position: -986px 0px;\n    }\n\t100% {\n        background-position: -1850px 0px;\n\n    }\n}\n\n\n\n.icon-billy-walk{\n    display: inline-block;\n    background-image: url(" + __webpack_require__(10) + ");\n    width: 72px;\n    height: 132px;\n\tanimation: billy-walk 0.35s steps(2) infinite;\n}\n\n@keyframes billy-walk{\n\t0% {\n        background-position: -1130px 0px;\n    }\n\t100% {\n        background-position: -1274px 0px;\n    }\n}\n\n.icon-billy-fall {\n    background-image: url(" + __webpack_require__(10) + ");\n    background-position: -1346px 0px;\n\twidth: 72px;\n\theight: 74px;\n\tanimation: billy-fall 0.7s cubic-bezier(.31,.07,.2,.72);\n}\n@keyframes billy-fall {\n\t\t0% {top: 80%;}\n\n\t\t25% {top: 70%;}\n\t\t39% {top: 80%;}\n\n\t\t65% {top: 76%;}\n\t\t73% {top: 80%;}\n\n\t\t95% {top: 78%;}\n\n\t\t100% {top: 80%;}\n}\n\n\n.icon-randy-walk{\n    display: inline-block;\n    background-image: url(" + __webpack_require__(10) + ");\n\tanimation: randy-walk 0.35s steps(2) infinite;\n}\n\n@keyframes randy-walk{\n\t0% {\n        background-position: -2020px 0px;\n        width: 76px;\n        height: 150px;\n    }\n\t100% {\n        background-position: calc(-986px + 24px) 0px;\n        width: 74px;\n        height: 150px;\n    }\n}\n\n\n.icon-randy-fall {\n    background-image: url(" + __webpack_require__(10) + ");\n    background-position: -1640px 0px;\n    width: 76px;\n    height: 58px;\n\tanimation: billy-fall 0.7s cubic-bezier(.31,.07,.2,.72);\n}\n@keyframes billy-fall {\n\t\t0% {top: 80%;}\n\n\t\t25% {top: 70%;}\n\t\t39% {top: 80%;}\n\n\t\t65% {top: 76%;}\n\t\t73% {top: 80%;}\n\n\t\t95% {top: 78%;}\n\n\t\t100% {top: 80%;}\n}\n\n\n\n.icon-randy-talk{\n    display: inline-block;\n    background-image: url(" + __webpack_require__(10) + ");\n    width: 76px;\n    height: 150px;\n\tanimation: randy-talk 0.5s steps(2) infinite;\n}\n\n@keyframes randy-talk{\n\t0% {\n        background-position: -1792px 0px;\n    }\n\t100% {\n        background-position: -1944px 0px;\n    }\n}\n\n\n\n.icon-mark-fall {\n    background-image: url(" + __webpack_require__(10) + ");\n    background-position: -2096px 0px;\n    width: 76px;\n    height: 54px;\n\tanimation: billy-fall 0.7s cubic-bezier(.31,.07,.2,.72);\n}\n@keyframes billy-fall {\n\t\t0% {top: 80%;}\n\n\t\t25% {top: 70%;}\n\t\t39% {top: 80%;}\n\n\t\t65% {top: 76%;}\n\t\t73% {top: 80%;}\n\n\t\t95% {top: 78%;}\n\n\t\t100% {top: 80%;}\n}\n\n\n\n.icon-bob-walk{\n    display: inline-block;\n    width: 80px;\n    height: 150px;\n    background-image: url(" + __webpack_require__(10) + ");\n\tanimation: bob-walk 0.35s steps(2) infinite;\n}\n\n@keyframes bob-walk{\n\t0% {\n        background-position: -2328px 0px;\n    }\n\t100% {\n        background-position: calc(-2172px + 4px) 0px;\n    }\n}\n\n\n.icon-mark-walk{\n    display: inline-block;\n    width: 82px;\n    height: 146px;\n    background-image: url(" + __webpack_require__(10) + ");\n\tanimation: mark-walk 0.35s steps(2) infinite;\n}\n\n@keyframes mark-walk{\n\t0% {\n        background-position: -2652px 0px;\n    }\n\t100% {\n        background-position: -2816px 0px;\n    }\n}\n\n\n.icon-mark-talk{\n    display: inline-block;\n    background-image: url(" + __webpack_require__(10) + ");\n    width: 82px;\n    height: 146px;\n\tanimation: mark-talk 0.5s steps(2) infinite;\n}\n\n@keyframes mark-talk{\n\t0% {\n        background-position: -2816px 0px;\n    }\n\t100% {\n        background-position: -3144px 0px;\n    }\n}\n", ""]);
+	exports.push([module.id, "\n\n\n.icon-bob-talk {\n    display: inline-block;\n    background-image: url(" + __webpack_require__(9) + ");\n    width: 52px;\n    height: 152px;\n\tanimation: bob-talk 0.5s steps(2) infinite;\n}\n\n@keyframes bob-talk{\n\t0% {\n        background-position: -146px 0px;\n    }\n\t100% {\n        background-position: -250px 0px;\n    }\n}\n\n.icon-sheffer-walk{\n    display: inline-block;\n    background-image: url(" + __webpack_require__(9) + ");\n    width: 56px;\n    height: 164px;\n\tanimation: sheffer-walk 0.35s steps(2) infinite;\n}\n\n@keyframes sheffer-walk{\n\t0% {\n        background-position: -306px 0px;\n    }\n\t100% {\n        background-position: -418px 0px;\n    }\n}\n\n\n.icon-sheffer-talk {\n    display: inline-block;\n    background-image: url(" + __webpack_require__(9) + ");\n    width: 60px;\n    height: 164px;\n\tanimation: sheffer-talk 0.5s steps(2) infinite;\n}\n\n@keyframes sheffer-talk{\n\t0% {\n        background-position: -474px 0px;\n    }\n\t100% {\n        background-position: -594px 0px;\n    }\n}\n\n\n.icon-billy-talk {\n    display: inline-block;\n    background-image: url(" + __webpack_require__(9) + ");\n    width: 72px;\n    height: 126px;\n\tanimation: billy-talk 0.5s steps(2) infinite;\n}\n\n@keyframes billy-talk{\n\t0% {\n        background-position: -986px 0px;\n    }\n\t100% {\n        background-position: -1850px 0px;\n\n    }\n}\n\n\n\n.icon-billy-walk{\n    display: inline-block;\n    background-image: url(" + __webpack_require__(9) + ");\n    width: 72px;\n    height: 132px;\n\tanimation: billy-walk 0.35s steps(2) infinite;\n}\n\n@keyframes billy-walk{\n\t0% {\n        background-position: -1130px 0px;\n    }\n\t100% {\n        background-position: -1274px 0px;\n    }\n}\n\n.icon-billy-fall {\n    background-image: url(" + __webpack_require__(9) + ");\n    background-position: -1346px 0px;\n\twidth: 72px;\n\theight: 74px;\n\tanimation: billy-fall 0.7s cubic-bezier(.31,.07,.2,.72);\n}\n@keyframes billy-fall {\n\t\t0% {top: 80%;}\n\n\t\t25% {top: 70%;}\n\t\t39% {top: 80%;}\n\n\t\t65% {top: 76%;}\n\t\t73% {top: 80%;}\n\n\t\t95% {top: 78%;}\n\n\t\t100% {top: 80%;}\n}\n\n\n.icon-randy-walk{\n    display: inline-block;\n    background-image: url(" + __webpack_require__(9) + ");\n\tanimation: randy-walk 0.35s steps(2) infinite;\n}\n\n@keyframes randy-walk{\n\t0% {\n        background-position: -2020px 0px;\n        width: 76px;\n        height: 150px;\n    }\n\t100% {\n        background-position: calc(-986px + 24px) 0px;\n        width: 74px;\n        height: 150px;\n    }\n}\n\n\n.icon-randy-fall {\n    background-image: url(" + __webpack_require__(9) + ");\n    background-position: -1640px 0px;\n    width: 76px;\n    height: 58px;\n\tanimation: billy-fall 0.7s cubic-bezier(.31,.07,.2,.72);\n}\n@keyframes billy-fall {\n\t\t0% {top: 80%;}\n\n\t\t25% {top: 70%;}\n\t\t39% {top: 80%;}\n\n\t\t65% {top: 76%;}\n\t\t73% {top: 80%;}\n\n\t\t95% {top: 78%;}\n\n\t\t100% {top: 80%;}\n}\n\n\n\n.icon-randy-talk{\n    display: inline-block;\n    background-image: url(" + __webpack_require__(9) + ");\n    width: 76px;\n    height: 150px;\n\tanimation: randy-talk 0.5s steps(2) infinite;\n}\n\n@keyframes randy-talk{\n\t0% {\n        background-position: -1792px 0px;\n    }\n\t100% {\n        background-position: -1944px 0px;\n    }\n}\n\n\n\n.icon-mark-fall {\n    background-image: url(" + __webpack_require__(9) + ");\n    background-position: -2096px 0px;\n    width: 76px;\n    height: 54px;\n\tanimation: billy-fall 0.7s cubic-bezier(.31,.07,.2,.72);\n}\n@keyframes billy-fall {\n\t\t0% {top: 80%;}\n\n\t\t25% {top: 70%;}\n\t\t39% {top: 80%;}\n\n\t\t65% {top: 76%;}\n\t\t73% {top: 80%;}\n\n\t\t95% {top: 78%;}\n\n\t\t100% {top: 80%;}\n}\n\n\n\n.icon-bob-walk{\n    display: inline-block;\n    width: 80px;\n    height: 150px;\n    background-image: url(" + __webpack_require__(9) + ");\n\tanimation: bob-walk 0.35s steps(2) infinite;\n}\n\n@keyframes bob-walk{\n\t0% {\n        background-position: -2328px 0px;\n    }\n\t100% {\n        background-position: calc(-2172px + 4px) 0px;\n    }\n}\n\n\n.icon-mark-walk{\n    display: inline-block;\n    width: 82px;\n    height: 146px;\n    background-image: url(" + __webpack_require__(9) + ");\n\tanimation: mark-walk 0.35s steps(2) infinite;\n}\n\n@keyframes mark-walk{\n\t0% {\n        background-position: -2652px 0px;\n    }\n\t100% {\n        background-position: -2816px 0px;\n    }\n}\n\n\n.icon-mark-talk{\n    display: inline-block;\n    background-image: url(" + __webpack_require__(9) + ");\n    width: 82px;\n    height: 146px;\n\tanimation: mark-talk 0.5s steps(2) infinite;\n}\n\n@keyframes mark-talk{\n\t0% {\n        background-position: -2816px 0px;\n    }\n\t100% {\n        background-position: -3144px 0px;\n    }\n}\n", ""]);
 	
 	// exports
 
 
 /***/ },
-/* 13 */
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 	
 	// load the styles
-	var content = __webpack_require__(14);
+	var content = __webpack_require__(13);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(7)(content, {});
+	var update = __webpack_require__(6)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -952,7 +955,7 @@
 	}
 
 /***/ },
-/* 14 */
+/* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(3)();
@@ -960,46 +963,46 @@
 	
 	
 	// module
-	exports.push([module.id, ".canvas {\n  margin: auto;\n  position: relative;\n  width: calc(800px * 0.75);\n  height: calc(600px * 0.85);\n  overflow: hidden;\n  outline: 1px solid mistyrose;\n  background-position: center center;\n  background-repeat: no-repeat;\n  background-size: contain; }\n\n.canvas-light {\n  background-image: url(" + __webpack_require__(15) + "); }\n\n.canvas-dark {\n  background-image: url(" + __webpack_require__(16) + "); }\n\n.canvas-red {\n  background-image: url(" + __webpack_require__(17) + "); }\n\n.canvas-white {\n  background-color: white; }\n\n.canvas-foul {\n  background-image: url(" + __webpack_require__(18) + "); }\n", ""]);
+	exports.push([module.id, ".canvas {\n  margin: auto;\n  position: relative;\n  width: calc(800px * 0.75);\n  height: calc(600px * 0.85);\n  overflow: hidden;\n  outline: 1px solid mistyrose;\n  background-position: center center;\n  background-repeat: no-repeat;\n  background-size: contain; }\n\n.canvas-light {\n  background-image: url(" + __webpack_require__(14) + "); }\n\n.canvas-dark {\n  background-image: url(" + __webpack_require__(15) + "); }\n\n.canvas-red {\n  background-image: url(" + __webpack_require__(16) + "); }\n\n.canvas-white {\n  background-color: white; }\n\n.canvas-foul {\n  background-image: url(" + __webpack_require__(17) + "); }\n", ""]);
 	
 	// exports
 
 
 /***/ },
-/* 15 */
+/* 14 */
 /***/ function(module, exports) {
 
 	module.exports = "data:image/png;base64,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"
 
 /***/ },
-/* 16 */
+/* 15 */
 /***/ function(module, exports) {
 
 	module.exports = "data:image/png;base64,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"
 
 /***/ },
-/* 17 */
+/* 16 */
 /***/ function(module, exports) {
 
 	module.exports = "data:image/png;base64,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"
 
 /***/ },
-/* 18 */
+/* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = __webpack_require__.p + "./dist/images/background-foul.png?d2d46dcec1b609aea7d4bd46005249af";
 
 /***/ },
-/* 19 */
+/* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 	
 	// load the styles
-	var content = __webpack_require__(20);
+	var content = __webpack_require__(19);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(7)(content, {});
+	var update = __webpack_require__(6)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -1016,7 +1019,7 @@
 	}
 
 /***/ },
-/* 20 */
+/* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(3)();
@@ -1024,10 +1027,16 @@
 	
 	
 	// module
-	exports.push([module.id, ".prompts {\n  position: absolute;\n  top: -40%;\n  left: -40%;\n  font-size: calc(13px * 0.8);\n  line-height: calc(54px * 0.7);\n  text-align: center;\n  visibility: hidden;\n  font-family: homestead;\n  width: calc(116px * 0.7);\n  height: calc(68px * 0.7);\n  background: url(" + __webpack_require__(21) + ") no-repeat center center;\n  background-size: contain; }\n\n.points {\n  position: absolute;\n  right: 5%;\n  top: 1%;\n  font-family: homestead;\n  color: green;\n  font-size: 30px; }\n\n.myStats, .opponentStats {\n  font-family: homestead;\n  font-size: 30px;\n  color: green;\n  position: absolute; }\n\n.opponentStats {\n  position: relative;\n  font-size: 20px;\n  width: 100%;\n  height: 100%; }\n\n.skillsOptions {\n  position: absolute;\n  bottom: 1%; }\n\nstrike {\n  font-size: 20px;\n  color: red;\n  transition: color 3s; }\n", ""]);
+	exports.push([module.id, ".winLose {\n  visibility: hidden;\n  position: absolute;\n  transform: translate(-50%, -50%);\n  left: 50%;\n  top: 25%;\n  font-size: 20px;\n  font-family: homesteadInline;\n  line-height: calc(68px * 1);\n  text-align: center;\n  width: calc(130px * 1.3);\n  height: calc(68px * 1.3);\n  background: url(" + __webpack_require__(20) + ") no-repeat center center;\n  background-size: contain; }\n\n.prompts {\n  position: absolute;\n  top: -40%;\n  left: -40%;\n  font-size: calc(13px * 0.8);\n  line-height: calc(54px * 0.7);\n  text-align: center;\n  visibility: hidden;\n  font-family: homestead;\n  width: calc(116px * 0.7);\n  height: calc(68px * 0.7);\n  background: url(" + __webpack_require__(21) + ") no-repeat center center;\n  background-size: contain; }\n\n.lives {\n  position: absolute;\n  font-size: 30px;\n  left: 40%;\n  font-family: homestead;\n  color: green; }\n\n.points {\n  position: absolute;\n  right: 0%;\n  font-family: homestead;\n  color: green;\n  font-size: 30px; }\n\n.myStats, .opponentStats {\n  font-family: homestead;\n  font-size: 30px;\n  color: green;\n  position: absolute; }\n\n.opponentStats {\n  position: absolute;\n  font-size: 20px;\n  width: 100%;\n  bottom: 2%; }\n\n.skillsOptions {\n  position: absolute;\n  bottom: 1%;\n  transform: translate(-50%, 0); }\n\nstrike {\n  font-size: 20px;\n  color: red;\n  transition: color 3s; }\n", ""]);
 	
 	// exports
 
+
+/***/ },
+/* 20 */
+/***/ function(module, exports) {
+
+	module.exports = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHQAAABECAYAAABQ4BGKAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH3wwNDSY2HJq0aAAAAS5JREFUeNrt3EEOgkAQRFHHcP8rjysTMtEIJIDV8/5aFlB8qtsQWu/9gTo8XYJaLEcPbK1R+0R6742h2G7oaKTuPZcP17sxdMYb4Zdp7zuFkbcbu8lUhs5iKDMzTWVodUOZmW0qQ4shUIEiokN1Z40uZahHLgQKgUKgEKhAkbKHrvYa+2jg/snQWQxlaqaZDNWh0KG4z1Bm1jCVof5YgEAhUAgUAhUoUvbQ1V5jHw3cPxnqkQuB4v4O1aWZ3cnQ2QwdTX3D2P80k6GzGqpbM8xkKEN16xUmjuz95h9DGbrNWOzj6Nc3GcrQmCnwlN+nwdBiLOknsHqv2LTNUIFCoDDlXjD1Vu1chppyTb0MhQ69qlOrmcxQhmabOnZtNVMZasrNnn6/GWvKhQ4FQ7GTFyp1zjx+IK1vAAAAAElFTkSuQmCC"
 
 /***/ },
 /* 21 */

@@ -112,7 +112,7 @@
 
 .icon-bob-fall {
   display: inline-block;
-  background-position: -783px 0px;
+  background-position: -782px 0px;
   width: 68px;
   height: 154px;
   background-image: url('../../dist/images/spritesheets/sprite-base.png');
@@ -349,3 +349,4 @@
   height: 146px;
   background-image: url('../../dist/images/spritesheets/sprite-base.png');
 }
+
