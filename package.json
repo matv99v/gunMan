@@ -1,0 +1,20 @@
+{
+  "name": "gunman_wise",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "file-loader": "^0.8.5",
+    "html-loader": "^0.4.0",
+    "node-sass": "^3.4.2",
+    "sass-loader": "^3.1.2",
+    "sprite-webpack-plugin": "^0.2.7",
+    "url-loader": "^0.5.7",
+    "webpack": "^1.12.9"
+  }
+}

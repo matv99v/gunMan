@@ -1,0 +1,76 @@
+@font-face {
+	font-family: homestead;
+	src: url('../fonts/homestead.ttf');
+}
+
+@font-face {
+	font-family: homesteadInline;
+	src: url('../fonts/homestead-inline.ttf');
+}
+
+body{
+	background-color: black;
+}
+
+
+.shooter{
+	// outline: 1px solid aqua;
+	position: absolute;
+	top: 80%;
+	transform: translate(-50%, -100%);
+	z-index: 5000;
+	transition: left 3.5s ease-out;
+
+}
+
+.hat{
+	// outline: 1px solid red;
+	position: fixed;
+	transform: translate(-50%, -50%);
+	left:50%;
+	animation: 1s forwards ease-in;
+	z-index: -5000;
+}
+
+@keyframes flying-hat-right{
+	0% {
+		transform: rotate(0deg);
+	}
+	50% {
+		top: -100%;
+	}
+	100% {
+		left: 300%;
+		transform: rotate(1080deg);
+	}
+}
+
+@keyframes flying-hat-left{
+	0% {
+		transform: rotate(0deg);
+	}
+	50% {
+		top: -100%;
+	}
+	100% {
+		left: -300%;
+		transform: rotate(1080deg);
+	}
+}
+
+
+svg {
+	fill-opacity: 0;
+	#head{
+	  fill: red;
+	}
+	#arm{
+	  fill: green;
+	}
+	#belly{
+	  fill: yellow;
+	}
+	#leg{
+	  fill: navy
+	}
+}

@@ -1,0 +1,31 @@
+.canvas{
+	margin: auto;
+	position: relative;
+	width: calc(800px * 0.75);
+	height: calc(600px * 0.85);
+	overflow: hidden;
+	outline: 1px solid mistyrose;
+	background-position: center center;
+	background-repeat: no-repeat;
+	background-size: contain;
+}
+
+.canvas-light{
+	background-image: url('../images/misc/background-light.png');
+}
+
+.canvas-dark{
+	background-image: url('../images/misc/background-dark.png');
+}
+
+.canvas-red{
+	background-image: url('../images/misc/background-red.png');
+}
+
+.canvas-white{
+	background-color: white;
+}
+
+.canvas-foul{
+	background-image: url('../images/misc/background-foul.png');
+}

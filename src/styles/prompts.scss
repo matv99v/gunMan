@@ -1,0 +1,87 @@
+
+.winLose{
+	visibility: hidden;
+	position: absolute;
+	transform: translate(-50%, -50%);
+	left: 50%;
+	top: 25%;
+	font-size: 20px;
+	font-family: homesteadInline;
+	line-height: calc(68px * 1);
+	text-align: center;
+
+	width: calc(130px * 1.3);
+	height: calc(68px * 1.3);
+	background: url('../images/misc/neutral.png') no-repeat center center;
+	background-size: contain;
+
+}
+
+
+
+
+.prompts{
+	position: absolute;
+	top: -40%;
+	left: -40%;
+	font-size: calc(13px * 0.8);
+	line-height: calc(54px * 0.7);
+	text-align: center;
+	visibility: hidden;
+	font-family: homestead;
+
+	width: calc(116px * 0.7);
+	height: calc(68px * 0.7);
+	background: url('../images/misc/empty.png') no-repeat center center;
+	background-size: contain;
+}
+
+
+
+.lives{
+	position: absolute;
+	font-size: 30px;
+	left: 40%;
+	font-family: homestead;
+	color: green;
+}
+
+
+.points {
+	position: absolute;
+	right: 0%;
+	font-family: homestead;
+	color:green;
+	font-size: 30px;
+}
+
+
+.myStats, .opponentStats{
+	font-family: homestead;
+	font-size: 30px;
+	color: green;
+	position: absolute;
+}
+
+
+.opponentStats{
+	position: absolute;
+	// display: block;
+	font-size: 20px;
+
+	width:100%;
+	bottom:2%;
+}
+
+.skillsOptions{
+	position: absolute;
+	bottom: 1%;
+	transform: translate(-50%, 0);
+	// bottom: 13%;
+}
+
+strike{
+	font-size: 20px;
+	color: red;
+	transition:  color 3s;
+}
