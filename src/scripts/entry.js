@@ -7,7 +7,7 @@ require('./sounds.js');
 require('./canvas.js');
 
 
-alert('start');
+// alert('start');
 
 													// win (shoot -> talk)
 // walk -> stand -> unholster('fire!') -> setTimeout
@@ -392,6 +392,9 @@ function clearOldData(){
 
 
 function newRound(){
+
+	window.removeEventListener("load", newRound, false);
+
 	console.log('---------------------------');
 	console.log('game turn', gamePlay.turn % game.names.length + 1);
 
@@ -431,4 +434,7 @@ function startGame(){
 
 }
 
-newRound();
+window.addEventListener("load", newRound, false);
+
+// window.removeEventListener("load", load, false); //remove listener, no longer needed
+// newRound();
