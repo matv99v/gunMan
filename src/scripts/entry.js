@@ -292,7 +292,7 @@ var gamePlay = {
 						callScoringSuccessively();
 					}, 350);
 				}
-			}, 40);
+			}, 20);
 		}
 
 		function callScoringSuccessively() {

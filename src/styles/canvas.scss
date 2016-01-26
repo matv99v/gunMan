@@ -1,16 +1,18 @@
+
+
 .canvas{
 	margin: auto;
-	position: fixed;
-	width: calc(800px * 0.75 * 1.25);
-	height: calc(600px * 0.85 * 1.25);
+	position: relative;
+	width: calc(800px * 0.75 * 1.25);  //750px
+	height: calc(600px * 0.85 * 1.25);  //637.5px
 	overflow: hidden;
 	// outline: 1px solid mistyrose;
 	background-position: center center;
 	background-repeat: no-repeat;
 	background-size: contain;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%);
+	margin-left: auto;
+
+
 
 
 }
