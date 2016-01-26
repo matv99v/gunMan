@@ -1,33 +1,36 @@
 var sounds = {
-	// bonusPoint : new Audio('./src/sounds/bonus-point.mp3'),
-	// doorOpening : new Audio('./src/sounds/door-opening.mp3'),
-	fire : new Audio('./src/sounds/fire.mp3'),
-	foul : new Audio('./src/sounds/foul.mp3'),
-	// gameOver : new Audio('./src/sounds/game-over.mp3'),
-	// guyFalling : new Audio('./src/sounds/guy-falling.mp3'),
-	guyHitFloor : new Audio('./src/sounds/guy-hit-floor.mp3'),
-	oneOutlawIntro : new Audio('./src/sounds/one-outlaw-intro.mp3'),
-	// prepareToPlay : new Audio('./src/sounds/prepare-to-play.mp3'),
-	prepareToShoot : new Audio('./src/sounds/prepare-to-shoot.mp3'),
-	shoot : new Audio('./src/sounds/shoot.mp3'),
-	// title : new Audio('./src/sounds/title.mp3'),
-	// twoOutlawsIntro : new Audio('./src/sounds/two-outlaws-intro.mp3'),
-	youLost : new Audio('./src/sounds/you-lost.mp3'),
-	youWon : new Audio('./src/sounds/you-won.mp3'),
 
+	bonusPoint : new Audio('./src/sounds/bonus.wav'),
+	fire : new Audio('./src/sounds/fire.mp3'),
+	foul : new Audio('./src/sounds/foul-muz.mp3'),
+	gameOver : new Audio('./src/sounds/game-over.mp3'),
+	oneOutlawIntro : new Audio('./src/sounds/one-outlaw-intro-muz.mp3'),
+	prepareToShoot : new Audio('./src/sounds/prepare-to-shoot-muz.mp3'),
+	shoot : new Audio('./src/sounds/shoot.mp3'),
+	youLost : new Audio('./src/sounds/you-lost-muz.mp3'),
+	youWon : new Audio('./src/sounds/you-won-muz.mp3'),
+	prepareToPlay : new Audio('./src/sounds/prepare-to-play-muz.mp3'),
+	reload : new Audio('./src/sounds/reload.mp3'),
+	weapon : new Audio('./src/sounds/weapon.mp3'),
+	cashRegister : new Audio('./src/sounds/cash-register.mp3'),
 
 	playOnTop : function(sfx){
-		sounds[sfx].load();
+		sounds[sfx].currentTime = 0;
 		sounds[sfx].play();
 	},
 
-	oldSfx : new Audio('./src/sounds/click.ogg'),
+	oldSfx : new Audio('./src/sounds/click.mp3'),
 	playNewStopOld : function(sfx) {
 		sounds.oldSfx.pause();
 		sounds.oldSfx = sounds[sfx];
-		sounds[sfx].load();
+		sounds[sfx].currentTime = 0;
 		sounds[sfx].play();
 	},
 };
 
-global.sounds = sounds;
+// sounds.bonusPoint.addEventListener('ended', function() {
+// 	sounds.bonusPoint.play();
+// }, false);
+
+sounds.bonusPoint.volume = 0.2;
+module.exports = sounds;

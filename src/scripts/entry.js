@@ -3,93 +3,151 @@ require('../styles/sprite-base.css');
 require('../styles/animation.css');
 require('../styles/canvas.scss');
 require('../styles/prompts.scss');
-require('./sounds.js');
-require('./canvas.js');
+require('../styles/options.scss');
+
+var canvas = require('./canvas.js');
+var points = require('./points.js');
+var sounds = require('./sounds.js');
 
 
-// alert('start');
-
-													// win (shoot -> talk)
-// walk -> stand -> unholster('fire!') -> setTimeout
-													// lose (fall)
+// localStorage.clear();
+if (!localStorage.highScoreEasy){ localStorage.highScoreEasy = 0; }
+if (!localStorage.highScoreHard){ localStorage.highScoreHard = 0; }
 
 
-var game = {
-	names: ['billy', 'bob', 'mark', 'randy', 'sheffer'],
-	opponents: [],
-
-	defineGunmanSkill: function(){
-		return Math.floor( (1.5 + Math.random()) * 1000 );
-	},
-
+var helpers = {
 	randomTrueOrFalse : function(){
 		return ((Math.random() - 0.5) < 0) ? false : true;
 	},
-	defineRandomOpponentName: function(){
-		var randNum = Math.floor( Math.random() * game.names.length );
-		return game.names[randNum];
-	},
-	spawnOpponents: function(num){
-		var dimension = Math.round( 100 / num );
-		for (var i = 0, len = game.names.length, position = -dimension / 2; i < num; i++){
-			var name = game.names[ i % len ];
-			position += dimension;
-			game.opponents.push( new Opponent( name, position + '%' ));
-		}
-	},
-
-	showStats: function(){
-		setTimeout(function () {
-			var statElement = document.querySelector('#opponentStats');
-
-				game.opponents.forEach( function(opp) {
-					aDiv = document.createElement('div');
-					aDiv.innerHTML = (opp.skill / 1000).toPrecision(3);
-					aDiv.id = 'stats-' + opp.domElement.id;
-					aDiv.className = 'skillsOptions';
-					aDiv.style.left = opp.domElement.style.left;
-					statElement.appendChild(aDiv);
-				});
-
-		}, 25);
-	},
-
-	kill : function(killedOpp){
-		canvas.flick();
-		// game.removeAllChildren(killedOpp.domElement);
-
-
-		var newArr = [];
-		game.opponents.forEach(function(opp){
-			if (opp.name != killedOpp.name ){
-				newArr.push(opp);
-			}
-		});
-		game.opponents = newArr;
-	},
-
 	removeAllChildren : function(domElement){
+
 		while (domElement.firstChild) {
 			domElement.removeChild(domElement.firstChild);
 		}
 	},
 
-	getOpponentById : function (killedId) {
-		for (var i = game.opponents.length; i > 0; i--){
-			if(game.opponents[i-1].domElement.id == killedId){
-				return game.opponents[i-1];
+	parseNum : function(num){
+		return (num / 1000).toFixed(2);
+	}
+};
+
+
+
+var gameData = {
+	names: ['billy', 'bob', 'mark', 'randy', 'sheffer'],
+	turn : 0,
+	gameDurationMs : 0,
+	lives : 3,
+	timer : '',
+
+	deleteAllOutlaws : function(){
+		var canvasChildren = canvas.domElement.children;
+		for(var ind = canvasChildren.length-1; ind > 0; ind-- ){
+			if (canvasChildren[ind].id.substring(0,6) == 'outlaw' ){
+				canvas.domElement.removeChild(canvasChildren[ind]);
 			}
 		}
 	},
 
-	opponentsWaitThenDo : function(ms, action, sfx){
+	resetGameData : function (){
+		points.killedTime = [];
+		opponents.dead = [];
+		opponents.alive = [];
+		canvas.domElement.className = 'canvas canvas-light';
+		gameData.gameDurationMs = 0;
+		points.myTimeDivElement.innerHTML = 'Time 0.00';
+		helpers.removeAllChildren(document.querySelector('#oppEndTimes'));
+		canvas.winLose.style.visibility = 'hidden';
+		gameData.deleteAllOutlaws();
+	}
+};
 
+var opponents = {
+	alive: [],
+	dead : [],
+	defineSkill : function(){
+		var step = points.isHard ? 500 : 750;
+		var diffPercent = points.isHard ? 50 : 25;
+		var minTime = points.isHard ? 400 : 500;
+		var len = opponents.alive.length;
+		var skillValues = [];
+
+		function getSkillTime() {
+			do{
+				var rndDiff = Math.round( ( (step / 100) * diffPercent * 2  * Math.random() ) - (step / 100) * diffPercent );
+				rndDiff = Math.floor(rndDiff / 10 ) * 10;
+				var skill = step * len + rndDiff;
+			}while (skill < minTime);
+			return skill;
+		}
+
+		for (; len > 0; len--) {
+			var currSkill = getSkillTime();
+			skillValues.push(currSkill);
+		}
+
+		skillValues.sort(function(){
+			return Math.random() - 0.5;
+		});
+
+		opponents.alive.forEach(function(opp, index){
+			opp.skill = skillValues[index];
+		});
+	},
+
+	getRndName: function(){
+		var randNum = Math.floor( Math.random() * gameData.names.length );
+		return gameData.names[randNum];
+	},
+
+	spawn: function(num){
+		var dimension = Math.round( 100 / num );
+		for (var i = 0, len = gameData.names.length, position = -dimension / 2; i < num; i++){
+			var name = gameData.names[ i % len ];
+			position += dimension;
+			opponents.alive.push( new Opponent( name, position + '%' ));
+		}
+	},
+
+	showSkills: function(){
 		setTimeout(function () {
-			game.opponents.forEach(function(opp){
+				opponents.alive.forEach( function(opp) {
+					opp.skillEl = document.createElement('div');
+					opp.skillEl.innerHTML = helpers.parseNum(opp.skill);
+					opp.skillEl.id = 'stats-' + opp.domElement.id;
+					opp.skillEl.className = 'skillsOptions';
+					opp.skillEl.style.left = opp.domElement.style.left;
+					canvas.statElement.appendChild(opp.skillEl);
+				});
+		}, 25);
+	},
+
+	kill : function(killedOpp){
+		canvas.flick();
+		var newArr = [];
+		opponents.alive.forEach(function(opp){
+			if (opp.name != killedOpp.name ){
+				newArr.push(opp);
+			}
+		});
+		opponents.alive = newArr;
+	},
+
+	getById : function (killedId) {
+		for (var i = opponents.alive.length; i > 0; i--){
+			if(opponents.alive[i-1].domElement.id == killedId){
+				return opponents.alive[i-1];
+			}
+		}
+	},
+
+	WaitThenDo : function(ms, action, sound){
+		setTimeout(function () {
+			opponents.alive.forEach(function(opp){
 				opp[action]();
 			});
 
-			if (sfx) {sounds.playNewStopOld(sfx);}
+			if (sound) {sounds.playNewStopOld(sound);}
 		}, ms);
 	},
 };
@@ -99,71 +157,54 @@ var game = {
 
 
 var gamePlay = {
-
-	turn : 0,
-
-
 	checkIfInGame : function () {
 		var flag = true;
-		for (i = game.opponents.length - 1; i >= 0; i--){
-			 flag = flag && (gamePlay.gameDurationMs < game.opponents[i].skill);
+		for (i = opponents.alive.length - 1; i >= 0; i--){
+			 flag = flag && (gameData.gameDurationMs < opponents.alive[i].skill);
 		}
 		return flag;
 	},
 
-	startTimer : function(){
+	startGameTimer : function(){
 		gamePlay.timer = setTimeout(function tick() {
-
-				gamePlay.gameDurationMs += 10;
-				points.myStatsDivElement.innerHTML = 'time ' + (gamePlay.gameDurationMs / 1000).toPrecision(3);
-
-
-				if ( !gamePlay.checkIfInGame() && !gamePlay.foulState) {
+				gameData.gameDurationMs += 10;
+				points.myTimeDivElement.innerHTML = 'Time ' + helpers.parseNum(gameData.gameDurationMs);
+				if ( !gamePlay.checkIfInGame() && !gamePlay.foulState ) {
 					clearTimeout(gamePlay.timer);
-					console.log('you lose!');
-
-
+					console.log('You lose!');
+					gameData.lives--;
+					canvas.livesEl.innerHTML = 'Lives ' + gameData.lives;
 					canvas.winLose.style.visibility = 'visible';
-					canvas.winLose.innerHTML = 'you lose!';
-
-
-					game.opponents.forEach(function(opp){
+					canvas.winLose.innerHTML = 'You lose!';
+					opponents.alive.forEach(function(opp){
 						opp.gunmanSayDomElement.innerHTML = "You're dead";
 						opp.domElement.removeChild(opp.svgIcon);
 					});
 
 					sounds.playOnTop('shoot');
+
 					canvas.red();
-					sounds.playNewStopOld('youLost');
 					canvas.domElement.removeEventListener('click', gamePlay.shootPhase, true);
-
-					game.opponents[game.opponents.length - 1].domElement.removeEventListener('transitionend', startGame);
-
-					game.opponentsWaitThenDo(10, 'talk');
-					game.opponentsWaitThenDo(3500, 'walkOut');
-
-
+					opponents.alive[opponents.alive.length - 1].domElement.removeEventListener('transitionend', startGame);
+					opponents.WaitThenDo(10, 'talk', 'youLost');
+					opponents.WaitThenDo(3500, 'walkOut');
+					opponents.alive[opponents.alive.length - 1].domElement.addEventListener('transitionend', newRound);
 				}
 
 				else{
-					if (game.opponents.length === 0) {
+					if (opponents.alive.length === 0) {
 						console.log('you win!');
-
 						points.resolveKilledTimePoints();
-
 						canvas.winLose.style.visibility = 'visible';
 						canvas.winLose.innerHTML = 'You win!';
-
-						game.opponents.forEach(function(opp){
+						opponents.alive.forEach(function(opp){
 							opp.gunmanSayDomElement.innerHTML = 'you win!';
 						});
-
 						clearTimeout(gamePlay.timer);
 						canvas.domElement.removeEventListener('click', gamePlay.shootPhase, true);
 						sounds.playNewStopOld('youWon');
-
-						gamePlay.turn += 1;
-						setTimeout(newRound , 2500);
+						gameData.turn += 1;
+						setTimeout(gamePlay.updateScore, 1500);
 					}
 					else {
 						gamePlay.timer = setTimeout(tick, 10);
@@ -172,126 +213,185 @@ var gamePlay = {
 		}, 10);
 	},
 
-	gameDurationMs : 0,
 
 	shootPhase : function (e) {
 		e.stopPropagation();
+
 		sounds.playOnTop('shoot');
 
-		if (!gamePlay.gameDurationMs) {
+		if (!gameData.gameDurationMs) {
 			gamePlay.foul();
-		} else if (e.target.id == "head" || e.target.id == "arm" || e.target.id == "belly" || e.target.id == "leg") {
+		} else if (e.target.id == "Head" ||
+				   e.target.id == "Arm" ||
+				   e.target.id == "Belly" ||
+				   e.target.id == "Leg") {
 
-			var killingTime = gamePlay.gameDurationMs + 10;
-			var killedBodyPart = e.target.id;
-			var killedDOMEl = e.target.offsetParent;
-			var killedOpponent = game.getOpponentById(killedDOMEl.id);
-			points.updateBodyParts(killedBodyPart);
-
-
-
-			points.killedTime.push(killedOpponent.skill - killingTime);
-
-
-			killedOpponent.gunmanSayDomElement.innerHTML = killedBodyPart + ' ' + points[killedBodyPart] + ' pts';
-
-			console.log('you hit ' + killedBodyPart + ' ' + points[killedBodyPart] + 'pts');
-
-			var infoEl = document.querySelector('#stats-' + killedDOMEl.id);
-			infoEl.innerHTML = '<strike>' + infoEl.innerHTML + '</strike>' + '<br>' + killingTime / 1000;
-
-			game.kill(killedOpponent);
+			var killedDOMEl = e.target.parentElement.parentElement.parentElement;
+			var killedOpponent = opponents.getById(killedDOMEl.id);
+			killedOpponent.killingTime = gameData.gameDurationMs + 10;
+			killedOpponent.killedBodyPart = e.target.id;
+			opponents.dead.push(killedOpponent);
+			killedOpponent.gunmanSayDomElement.innerHTML = killedOpponent.killedBodyPart + ' ' + points[killedOpponent.killedBodyPart] + ' pts';
+			console.log('you hit ' + killedOpponent.name + "'s " +  killedOpponent.killedBodyPart);
+			killedOpponent.skillEl.innerHTML = '<strike>' + killedOpponent.skillEl.innerHTML + '</strike><br>' + helpers.parseNum(killedOpponent.killingTime) ;
+			opponents.kill(killedOpponent);
 			killedOpponent.fall();
-
-			if (game.opponents.length === 0) {
+			if (opponents.alive.length === 0) {
 				var endTime = Date.now();
 			}
 		 }
 	},
 
+
 	foul : function(){
+		clearTimeout(gameData.timer);
+		gamePlay.foulState = true;
 		console.log('foul');
-		clearTimeout(gamePlay.startTimer);
+		clearTimeout(gamePlay.startGameTimer);
 		canvas.foul();
-
-
 		canvas.winLose.style.visibility = 'visible';
 		canvas.winLose.innerHTML = 'Foul';
-
-
-
 		canvas.domElement.removeEventListener('click', gamePlay.shootPhase, true);
-		game.opponents[game.opponents.length - 1].domElement.removeEventListener('transitionend', startGame);
-
-		game.opponents.forEach(function(opp){
+		opponents.alive[opponents.alive.length - 1].domElement.removeEventListener('transitionend', startGame);
+		opponents.alive.forEach(function(opp){
 			opp.domElement.style.left = opp.startPosition;
-			game.opponentsWaitThenDo(10, 'walkOut', 'foul');
+			opponents.WaitThenDo(10, 'walkOut', 'foul'); //'foul'
 		});
-		gamePlay.foulState = true;
+
+		gameData.lives--;
+		canvas.livesEl.innerHTML = 'Lives ' + gameData.lives;
+
+		opponents.alive[opponents.alive.length - 1].domElement.addEventListener('transitionend', newRound);
+		gamePlay.foulState = false;
+
 	},
 
-	foulState : false
-};
+	foulState : false,
 
-var points = {
-	myStatsDivElement : document.querySelector('#myStats'),
-	pointsDomElement : document.querySelector('#points'),
-	amount: 0,
+	updateScore : function(){
 
-	head: 20,
-	belly: 15,
-	arm: 5,
-	leg: 5,
+		function waitAndPrint(deadOpp){
+			setTimeout(function () {
+				deadOpp.skillEl.innerHTML = '<strike>' + helpers.parseNum(deadOpp.skill) + '</strike>' +
+											'<br>' + helpers.parseNum(deadOpp.killingTime);
+				deadOpp.killingTime += 10;
 
-	updateBodyParts: function(part){
-		points.amount+= points[part];
-		points.printPoints();
+				if (deadOpp.killingTime <= deadOpp.skill) {
+					points.amount += 1;
+					points.printPoints();
+					sounds.playNewStopOld('bonusPoint');
+					waitAndPrint(deadOpp);
+				} else {
+					// sounds.bonusPoint.pause();
+
+
+					deadOpp.gunmanSayDomElement.classList.add('blinkBodyPartsScore');
+					sounds.playOnTop('cashRegister');
+					setTimeout(function () {
+						points.updateBodyParts(deadOpp.killedBodyPart);
+						callScoringSuccessively();
+					}, 350);
+				}
+			}, 40);
+		}
+
+		function callScoringSuccessively() {
+			last--;
+
+			if (opponents.dead[last]) {
+				setTimeout(function () {
+					waitAndPrint(opponents.dead[last]);
+					// sounds.bonusPoint.play();
+
+
+				}, 500);
+			} else {
+				setTimeout(newRound , 2000);
+			}
+		}
+
+		var last = opponents.dead.length;
+		callScoringSuccessively();
 	},
 
+	optionsPanel : function(){
 
-	killedTime : [],
+		canvas.domElement.style.cursor = 'default';
+		console.log('options');
+		canvas.chooseOptions();
+		points.isHard = true;
 
-	resolveKilledTimePoints: function(){
+		var optionsEl = document.querySelector('#options');
+		optionsEl.innerHTML = require('../htmlElements/options.html');
+		canvas.domElement.appendChild(optionsEl);
 
-		points.killedTime.forEach(function(pts){
-			var ppp = Math.round(pts / 50);
-			points.amount += ppp;
-			console.log('time pts ' + ppp + 'pts');
+		var highscoreEl = document.querySelector('#highscoreEl');
+		highscoreEl.innerHTML = 'Highscore: ' + (points.isHard ? points.addNulls(localStorage.highScoreHard)
+																: points.addNulls(localStorage.highScoreEasy));
+
+		var difficultyEl = document.querySelector('#difficultyEl');
+
+		difficultyEl.addEventListener('change', function(){
+			sounds.playOnTop('weapon');
+			points.isHard = difficultyEl.checked;
+			highscoreEl.innerHTML = 'Highscore: ' + (points.isHard ? points.addNulls(localStorage.highScoreHard)
+																	: points.addNulls(localStorage.highScoreEasy));
 		});
-		points.printPoints();
+
+		var startNewGameButton = document.querySelector('#startNewGame');
+
+		gameData.deleteAllOutlaws();
+		canvas.hideInfo();
+		optionsEl.style.visibility = 'visible';
+
+		startNewGameButton.addEventListener('click', function(){
+			sounds.playOnTop('reload');
+
+			setTimeout(function () {
+				canvas.showInfo();
+				points.amount = 0;
+				points.printPoints();
+				gameData.lives = 3;
+				canvas.livesEl.innerHTML = 'Lives ' + gameData.lives;
+				gameData.turn = 0;
+				helpers.removeAllChildren(optionsEl);
+				newRound();
+			}, 400);
+		});
+
+		var aboutEl = document.querySelector('#about');
+		aboutEl.addEventListener('click', function(){
+			sounds.playOnTop('weapon');
+			helpers.removeAllChildren(optionsEl);
+			optionsEl.innerHTML = require('../htmlElements/about.html');
+			var xCloseEl = document.querySelector('#xClose');
+			xCloseEl.addEventListener('click', function(){
+				sounds.playOnTop('weapon');
+				helpers.removeAllChildren(optionsEl);
+				gamePlay.optionsPanel();
+
+			});
+
+		});
 
 
-
-	},
-
-	printPoints: function(){
-		points.pointsDomElement.innerHTML = 'points ' + points.amount;
 	}
-
 };
-
-
-
-
 
 Opponent.prototype = {
 	init : function(){
 		this.domElement = document.createElement('div');
-		this.domElement.id = 'outlaw-' + (game.opponents.length);
+		this.domElement.id = 'outlaw-' + (opponents.alive.length);
 		this.domElement.classList.add('shooter');
 
-		this.startPosition = ( game.randomTrueOrFalse() ) ?
+		this.startPosition = ( helpers.randomTrueOrFalse() ) ?
 				this.domElement.style.left = "-7%" :
 				this.domElement.style.left = "107%";
 
 		canvas.domElement.appendChild(this.domElement);
-
 		this.gunmanSayDomElement = document.createElement('div');
 		this.gunmanSayDomElement.className = 'prompts';
-
 		this.domElement.appendChild(this.gunmanSayDomElement);
-
-
 	},
 
 	switchClass : function (newClass){
@@ -302,7 +402,6 @@ Opponent.prototype = {
 	addSVG : function (){
 		this.svgIcon = document.createElement('div');
 		this.svgIcon.innerHTML = require('../htmlElements/' + this.name + '_inlineSVG.html');
-
 		this.domElement.appendChild(this.svgIcon);
 	},
 
@@ -328,113 +427,103 @@ Opponent.prototype = {
 	aim : function(){
 		this.switchClass('icon-' + this.name + '-aim');
 		this.addSVG();
-		this.gunmanSayDomElement.innerHTML = 'fire!';
+		this.gunmanSayDomElement.innerHTML = 'Fire!';
 		this.gunmanSayDomElement.style.visibility = 'visible';
-
 	},
 
 	fall : function(){
-
-
-
 		this.domElement.removeChild(this.svgIcon);
 		this.switchClass('icon-' + this.name + '-fall');
 		hatDomElement = document.createElement('div');
 		hatDomElement.className = 'hat icon-' + this.name + '-hat';
 		hatDomElement.style.top = "25%";
 
-		if ( game.randomTrueOrFalse() ) {
+		if ( helpers.randomTrueOrFalse() ) {
 			hatDomElement.style.animationName = 'flying-hat-right';
 		} else {
 			hatDomElement.style.animationName = 'flying-hat-left';
 		}
 		this.domElement.appendChild(hatDomElement);
-		sounds.playOnTop('guyHitFloor');
 	},
 
 	talk : function(){
 		this.switchClass('icon-' + this.name + '-talk');
 	},
-
-
 };
 
 function Opponent(name, position){
 	this.name = name;
-	this.skill = game.defineGunmanSkill();
+	this.skill = 0;
+	this.skillEl = '';
 	this.position = position;
+	this.killingTime = 0;
+	this.killedBodyPart = '';
 	this.init();
-
 }
 
+function newRound(){
+	canvas.statElement.style.visibility = 'visible';
+	canvas.domElement.style.cursor = 'crosshair';
 
+ 	if (gameData.lives !== 0)	 {
+		console.log('---------------------------');
+		console.log('Game turn', gameData.turn % gameData.names.length + 1);
+		gameData.resetGameData();
 
-function clearOldData(){
+		opponents.spawn(gameData.turn % gameData.names.length + 1);
+		opponents.defineSkill();
+		opponents.alive[opponents.alive.length - 1].domElement.removeEventListener('transitionend', newRound);
+		opponents.showSkills();
 
-	points.killedTime = [];
+		// each opponent perform action after the specified delay in ms
+		// and the last arg is music to play along
 
-	gamePlay.gameDurationMs = 0;
-	points.myStatsDivElement.innerHTML = 'time 00.00';
+		opponents.WaitThenDo(10, 'walkIn', 'oneOutlawIntro'); //'oneOutlawIntro'
+		opponents.WaitThenDo(3600, 'stand'); //'prepareToShoot'
 
-	game.removeAllChildren(document.querySelector('#opponentStats'));
+		// listen to the last opponent trasition (walk 3.5sec) to end
+		opponents.alive[opponents.alive.length - 1].domElement.addEventListener('transitionend', startGame);
+	}
+	else {
+		opponents.alive[opponents.alive.length - 1].domElement.removeEventListener('transitionend', newRound);
+		console.log('game over!');
+		sounds.playNewStopOld('gameOver');
 
-	canvas.winLose.style.visibility = 'hidden';
+		canvas.winLose.innerHTML = 'Game over';
 
+		points.highScore = points.isHard ? localStorage.highScoreHard : localStorage.highScoreEasy;
 
-
-	var canvasChildren = canvas.domElement.children;
-	for(var ind = canvasChildren.length-1; ind > 0; ind-- ){
-		if (canvasChildren[ind].id.substring(0,6) == 'outlaw' ){
-			canvas.domElement.removeChild(canvasChildren[ind]);
+		if (points.highScore < points.amount){
+			if (points.isHard){
+				localStorage.highScoreHard = points.amount;
+			} else {
+				localStorage.highScoreEasy = points.amount;
+			}
 		}
+
+		points.amount = 0;
+		setTimeout(function () {
+			gamePlay.optionsPanel();
+			sounds.playNewStopOld('prepareToPlay');
+
+		}, 6000);
 	}
 }
 
 
-function newRound(){
-
-	window.removeEventListener("load", newRound, false);
-
-	console.log('---------------------------');
-	console.log('game turn', gamePlay.turn % game.names.length + 1);
-
-
-	clearOldData();
-
-
-
-
-
-	game.spawnOpponents(gamePlay.turn % game.names.length + 1);
-	game.showStats();
-
-	// each opponent perform action after the specified delay in ms
-	// and the last arg is music to play along
-
-	game.opponentsWaitThenDo(10, 'walkIn', 'oneOutlawIntro');
-	game.opponentsWaitThenDo(3600, 'stand', 'prepareToShoot');
-
-	// listen to the last opponent trasition (walk 3.5sec) to end
-	game.opponents[game.opponents.length - 1].domElement.addEventListener('transitionend', startGame);
-}
-
 function startGame(){
 	//listen to shoot clik
+	sounds.playNewStopOld('prepareToShoot');
 	canvas.domElement.addEventListener('click', gamePlay.shootPhase, true);
-
 	// pause before shooting
-	setTimeout(function () {
-
+	gameData.timer = setTimeout(function () {
 		if (!gamePlay.foulState) {		//checks if there is no foul
-			gamePlay.startTimer();
-			game.opponentsWaitThenDo(1, 'unholster');
-			game.opponentsWaitThenDo(150, 'aim', 'fire');
+			gamePlay.startGameTimer();
+			opponents.WaitThenDo(1, 'unholster');
+			opponents.WaitThenDo(150, 'aim', 'fire');
 		}
-	}, game.defineGunmanSkill() * 2);
-
+	}, 2 * Math.floor( (1.5 + Math.random()) * 1000 ));
 }
 
-window.addEventListener("load", newRound, false);
-
-// window.removeEventListener("load", load, false); //remove listener, no longer needed
-// newRound();
+gamePlay.optionsPanel();
+sounds.playNewStopOld('prepareToPlay');

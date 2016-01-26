@@ -3,7 +3,7 @@
   background-position: 0px 0px;
   width: 42px;
   height: 36px;
-  background-image: url('../images/misc/sprite-base.png');
+  background-image: url('../images/spriteSheets/sprite-base.png');
 }
 
 .icon-randy-hat {
@@ -11,7 +11,7 @@
   background-position: -42px 0px;
   width: 52px;
   height: 40px;
-  background-image: url('../images/misc/sprite-base.png');
+  background-image: url('../images/spriteSheets/sprite-base.png');
 }
 
 .icon-bob-aim {
@@ -19,7 +19,7 @@
   background-position: -94px 0px;
   width: 52px;
   height: 152px;
-  background-image: url('../images/misc/sprite-base.png');
+  background-image: url('../images/spriteSheets/sprite-base.png');
 }
 
 .icon-bob-talk-a {
@@ -27,7 +27,7 @@
   background-position: -146px 0px;
   width: 52px;
   height: 152px;
-  background-image: url('../images/misc/sprite-base.png');
+  background-image: url('../images/spriteSheets/sprite-base.png');
 }
 
 .icon-bob-talk-b {
@@ -35,7 +35,7 @@
   background-position: -198px 0px;
   width: 52px;
   height: 152px;
-  background-image: url('../images/misc/sprite-base.png');
+  background-image: url('../images/spriteSheets/sprite-base.png');
 }
 
 .icon-sheffer-stand {
@@ -43,7 +43,7 @@
   background-position: -250px 0px;
   width: 56px;
   height: 164px;
-  background-image: url('../images/misc/sprite-base.png');
+  background-image: url('../images/spriteSheets/sprite-base.png');
 }
 
 .icon-sheffer-walk-b {
@@ -51,7 +51,7 @@
   background-position: -306px 0px;
   width: 56px;
   height: 164px;
-  background-image: url('../images/misc/sprite-base.png');
+  background-image: url('../images/spriteSheets/sprite-base.png');
 }
 
 .icon-sheffer-walk-a {
@@ -59,7 +59,7 @@
   background-position: -362px 0px;
   width: 56px;
   height: 164px;
-  background-image: url('../images/misc/sprite-base.png');
+  background-image: url('../images/spriteSheets/sprite-base.png');
 }
 
 .icon-billy-hat {
@@ -67,7 +67,7 @@
   background-position: -418px 0px;
   width: 56px;
   height: 22px;
-  background-image: url('../images/misc/sprite-base.png');
+  background-image: url('../images/spriteSheets/sprite-base.png');
 }
 
 .icon-sheffer-talk-b {
@@ -75,7 +75,7 @@
   background-position: -474px 0px;
   width: 60px;
   height: 164px;
-  background-image: url('../images/misc/sprite-base.png');
+  background-image: url('../images/spriteSheets/sprite-base.png');
 }
 
 .icon-sheffer-talk-a {
@@ -83,7 +83,7 @@
   background-position: -534px 0px;
   width: 60px;
   height: 164px;
-  background-image: url('../images/misc/sprite-base.png');
+  background-image: url('../images/spriteSheets/sprite-base.png');
 }
 
 .icon-sheffer-aim {
@@ -91,7 +91,7 @@
   background-position: -594px 0px;
   width: 60px;
   height: 164px;
-  background-image: url('../images/misc/sprite-base.png');
+  background-image: url('../images/spriteSheets/sprite-base.png');
 }
 
 .icon-sheffer-unholster {
@@ -99,7 +99,7 @@
   background-position: -654px 0px;
   width: 60px;
   height: 164px;
-  background-image: url('../images/misc/sprite-base.png');
+  background-image: url('../images/spriteSheets/sprite-base.png');
 }
 
 .icon-bob-stand {
@@ -107,7 +107,7 @@
   background-position: -714px 0px;
   width: 68px;
   height: 154px;
-  background-image: url('../images/misc/sprite-base.png');
+  background-image: url('../images/spriteSheets/sprite-base.png');
 }
 
 .icon-bob-fall {
@@ -115,7 +115,7 @@
   background-position: -782px 0px;
   width: 68px;
   height: 154px;
-  background-image: url('../images/misc/sprite-base.png');
+  background-image: url('../images/spriteSheets/sprite-base.png');
 }
 
 .icon-mark-hat {
@@ -123,7 +123,7 @@
   background-position: -850px 0px;
   width: 68px;
   height: 52px;
-  background-image: url('../images/misc/sprite-base.png');
+  background-image: url('../images/spriteSheets/sprite-base.png');
 }
 
 .icon-sheffer-fall {
@@ -131,7 +131,7 @@
   background-position: -918px 0px;
   width: 68px;
   height: 164px;
-  background-image: url('../images/misc/sprite-base.png');
+  background-image: url('../images/spriteSheets/sprite-base.png');
 }
 
 .icon-billy-talk-b {
@@ -139,7 +139,7 @@
   background-position: -986px 0px;
   width: 72px;
   height: 126px;
-  background-image: url('../images/misc/sprite-base.png');
+  background-image: url('../images/spriteSheets/sprite-base.png');
 }
 
 .icon-billy-unholster {
@@ -147,7 +147,7 @@
   background-position: -1058px 0px;
   width: 72px;
   height: 130px;
-  background-image: url('../images/misc/sprite-base.png');
+  background-image: url('../images/spriteSheets/sprite-base.png');
 }
 
 .icon-billy-walk-a {
@@ -155,7 +155,7 @@
   background-position: -1130px 0px;
   width: 72px;
   height: 132px;
-  background-image: url('../images/misc/sprite-base.png');
+  background-image: url('../images/spriteSheets/sprite-base.png');
 }
 
 .icon-billy-walk-b {
@@ -163,7 +163,7 @@
   background-position: -1202px 0px;
   width: 72px;
   height: 132px;
-  background-image: url('../images/misc/sprite-base.png');
+  background-image: url('../images/spriteSheets/sprite-base.png');
 }
 
 .icon-billy-aim {
@@ -171,7 +171,7 @@
   background-position: -1274px 0px;
   width: 72px;
   height: 126px;
-  background-image: url('../images/misc/sprite-base.png');
+  background-image: url('../images/spriteSheets/sprite-base.png');
 }
 
 .icon-billy-fall {
@@ -179,7 +179,7 @@
   background-position: -1346px 0px;
   width: 72px;
   height: 74px;
-  background-image: url('../images/misc/sprite-base.png');
+  background-image: url('../images/spriteSheets/sprite-base.png');
 }
 
 .icon-billy-talk-a {
@@ -187,7 +187,7 @@
   background-position: -1418px 0px;
   width: 72px;
   height: 126px;
-  background-image: url('../images/misc/sprite-base.png');
+  background-image: url('../images/spriteSheets/sprite-base.png');
 }
 
 .icon-randy-walk-b {
@@ -195,7 +195,7 @@
   background-position: -1490px 0px;
   width: 74px;
   height: 150px;
-  background-image: url('../images/misc/sprite-base.png');
+  background-image: url('../images/spriteSheets/sprite-base.png');
 }
 
 .icon-billy-stand {
@@ -203,7 +203,7 @@
   background-position: -1564px 0px;
   width: 76px;
   height: 132px;
-  background-image: url('../images/misc/sprite-base.png');
+  background-image: url('../images/spriteSheets/sprite-base.png');
 }
 
 .icon-randy-fall {
@@ -211,7 +211,7 @@
   background-position: -1640px 0px;
   width: 76px;
   height: 58px;
-  background-image: url('../images/misc/sprite-base.png');
+  background-image: url('../images/spriteSheets/sprite-base.png');
 }
 
 .icon-randy-stand {
@@ -219,7 +219,7 @@
   background-position: -1716px 0px;
   width: 76px;
   height: 150px;
-  background-image: url('../images/misc/sprite-base.png');
+  background-image: url('../images/spriteSheets/sprite-base.png');
 }
 
 .icon-randy-talk-a {
@@ -227,7 +227,7 @@
   background-position: -1792px 0px;
   width: 76px;
   height: 150px;
-  background-image: url('../images/misc/sprite-base.png');
+  background-image: url('../images/spriteSheets/sprite-base.png');
 }
 
 .icon-randy-talk-b {
@@ -235,7 +235,7 @@
   background-position: -1868px 0px;
   width: 76px;
   height: 150px;
-  background-image: url('../images/misc/sprite-base.png');
+  background-image: url('../images/spriteSheets/sprite-base.png');
 }
 
 .icon-randy-aim {
@@ -243,7 +243,7 @@
   background-position: -1944px 0px;
   width: 76px;
   height: 150px;
-  background-image: url('../images/misc/sprite-base.png');
+  background-image: url('../images/spriteSheets/sprite-base.png');
 }
 
 .icon-randy-walk-a {
@@ -251,7 +251,7 @@
   background-position: -2020px 0px;
   width: 76px;
   height: 150px;
-  background-image: url('../images/misc/sprite-base.png');
+  background-image: url('../images/spriteSheets/sprite-base.png');
 }
 
 .icon-mark-fall {
@@ -259,7 +259,7 @@
   background-position: -2096px 0px;
   width: 76px;
   height: 54px;
-  background-image: url('../images/misc/sprite-base.png');
+  background-image: url('../images/spriteSheets/sprite-base.png');
 }
 
 .icon-randy-unholster {
@@ -267,7 +267,7 @@
   background-position: -2172px 0px;
   width: 76px;
   height: 150px;
-  background-image: url('../images/misc/sprite-base.png');
+  background-image: url('../images/spriteSheets/sprite-base.png');
 }
 
 .icon-bob-walk-b {
@@ -275,7 +275,7 @@
   background-position: -2248px 0px;
   width: 80px;
   height: 150px;
-  background-image: url('../images/misc/sprite-base.png');
+  background-image: url('../images/spriteSheets/sprite-base.png');
 }
 
 .icon-bob-walk-a {
@@ -283,7 +283,7 @@
   background-position: -2328px 0px;
   width: 80px;
   height: 150px;
-  background-image: url('../images/misc/sprite-base.png');
+  background-image: url('../images/spriteSheets/sprite-base.png');
 }
 
 .icon-bob-unholster {
@@ -291,7 +291,7 @@
   background-position: -2408px 0px;
   width: 80px;
   height: 148px;
-  background-image: url('../images/misc/sprite-base.png');
+  background-image: url('../images/spriteSheets/sprite-base.png');
 }
 
 .icon-mark-unholster {
@@ -299,7 +299,7 @@
   background-position: -2488px 0px;
   width: 82px;
   height: 146px;
-  background-image: url('../images/misc/sprite-base.png');
+  background-image: url('../images/spriteSheets/sprite-base.png');
 }
 
 .icon-mark-aim {
@@ -307,7 +307,7 @@
   background-position: -2570px 0px;
   width: 82px;
   height: 146px;
-  background-image: url('../images/misc/sprite-base.png');
+  background-image: url('../images/spriteSheets/sprite-base.png');
 }
 
 .icon-mark-walk-a {
@@ -315,7 +315,7 @@
   background-position: -2652px 0px;
   width: 82px;
   height: 146px;
-  background-image: url('../images/misc/sprite-base.png');
+  background-image: url('../images/spriteSheets/sprite-base.png');
 }
 
 .icon-mark-walk-b {
@@ -323,7 +323,7 @@
   background-position: -2734px 0px;
   width: 82px;
   height: 146px;
-  background-image: url('../images/misc/sprite-base.png');
+  background-image: url('../images/spriteSheets/sprite-base.png');
 }
 
 .icon-mark-talk-a {
@@ -331,7 +331,7 @@
   background-position: -2816px 0px;
   width: 82px;
   height: 146px;
-  background-image: url('../images/misc/sprite-base.png');
+  background-image: url('../images/spriteSheets/sprite-base.png');
 }
 
 .icon-mark-stand {
@@ -339,7 +339,7 @@
   background-position: -2898px 0px;
   width: 82px;
   height: 146px;
-  background-image: url('../images/misc/sprite-base.png');
+  background-image: url('../images/spriteSheets/sprite-base.png');
 }
 
 .icon-mark-talk-b {
@@ -347,6 +347,6 @@
   background-position: -2980px 0px;
   width: 82px;
   height: 146px;
-  background-image: url('../images/misc/sprite-base.png');
+  background-image: url('../images/spriteSheets/sprite-base.png');
 }
 

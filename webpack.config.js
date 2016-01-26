@@ -1,7 +1,5 @@
 var EXCLUDE = /node_modules/;
 var ExtractTextPlugin = require("extract-text-webpack-plugin");   //plugin for extracting to a separate file
-
-
 var sprite = require('sprite-webpack-plugin');
 
 module.exports = {
@@ -21,14 +19,14 @@ module.exports = {
 			{
 				test: /\.scss$/,
 				// loader: "style!css!sass",
-				loader: ExtractTextPlugin.extract("css!sass"),  //will extract sass styles to a separate .css file
+				loader: ExtractTextPlugin.extract("css!autoprefixer-loader!sass"),  //will extract sass styles to a separate .css file
 
 				exclude: EXCLUDE,
 			},
 			{
 				test: /\.css$/,
 				// loader: "style!css",
-				loader: ExtractTextPlugin.extract("css"),  //will extract sass styles to a separate .css file
+				loader: ExtractTextPlugin.extract("css!autoprefixer-loader"),  //will extract sass styles to a separate .css file
 
 				exclude: EXCLUDE,
 			},
@@ -44,22 +42,22 @@ module.exports = {
 				exclude: EXCLUDE,
 				query: {
 					name: './dist/images/[name].[ext]?[hash]',
-					// limit: '1'
 				}
-			}
+			},
+
 
 		]
 
 	},
 
-
 	plugins: [
 		new sprite({
-			'source': './src/images/sprites/',
-			'imgPath': './src/images/misc/',
+			'source': './src/images/spriteSource/',
+			'imgPath': './src/images/spriteSheets/',
 			'cssPath': 'src/styles/',
 			'processor': 'css',
-			'orientation': 'horizontal'
+			'orientation': 'horizontal',
+			// 'multiFolders': 'true'
 		}),
 
 		new ExtractTextPlugin("./dist/style.css")

@@ -1,15 +1,10 @@
-@font-face {
-	font-family: homestead;
-	src: url('../fonts/homestead.ttf');
-}
-
-@font-face {
-	font-family: homesteadInline;
-	src: url('../fonts/homestead-inline.ttf');
-}
-
 body{
 	background-color: black;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
 }
 
 
@@ -20,7 +15,6 @@ body{
 	transform: translate(-50%, -100%);
 	z-index: 5000;
 	transition: left 3.5s ease-out;
-
 }
 
 .hat{

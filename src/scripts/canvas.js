@@ -1,6 +1,26 @@
 var canvas = {
 	domElement: document.querySelector('#canvas'),
 	winLose: document.querySelector('#winLose'),
+	statElement: document.querySelector('#oppEndTimes'),
+	livesEl: document.querySelector('#lives'),
+
+	hideInfo : function(){
+		var canvasChildren = canvas.domElement.children;
+		Array.prototype.forEach.call(canvasChildren, function(child){
+			child.style.visibility = 'hidden';
+		});
+	},
+
+	showInfo: function(){
+		var canvasChildren = canvas.domElement.children;
+		Array.prototype.forEach.call(canvasChildren, function(child){
+			child.style.visibility = 'visible';
+		});
+	},
+
+	chooseOptions : function(){
+		canvas.domElement.className = 'canvas canvas-options';
+	},
 
 	red: function(){
 		canvas.domElement.className = 'canvas canvas-red';
@@ -45,4 +65,5 @@ var canvas = {
 	}
 };
 
-global.canvas = canvas;
+
+module.exports = canvas;
