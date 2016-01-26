@@ -40,7 +40,7 @@ module.exports = {
 				test: /\.(ttf|png|jpg|jpeg|gif)$/,
 				loader: 'url',
 				exclude: EXCLUDE,
-				limit: '1000',
+				limit: '1',
 				query: {
 					name: './dist/images/[name].[ext]?[hash]',
 				}
