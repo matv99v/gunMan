@@ -50,42 +50,42 @@
 	__webpack_require__(6);
 	__webpack_require__(12);
 	__webpack_require__(15);
-
+	
 	var canvas = __webpack_require__(16);
 	var points = __webpack_require__(17);
 	var sounds = __webpack_require__(18);
-
-
+	
+	
 	// localStorage.clear();
 	if (!localStorage.highScoreEasy){ localStorage.highScoreEasy = 0; }
 	if (!localStorage.highScoreHard){ localStorage.highScoreHard = 0; }
-
-
+	
+	
 	var helpers = {
 		randomTrueOrFalse : function(){
 			return ((Math.random() - 0.5) < 0) ? false : true;
 		},
 		removeAllChildren : function(domElement){
-
+	
 			while (domElement.firstChild) {
 				domElement.removeChild(domElement.firstChild);
 			}
 		},
-
+	
 		parseNum : function(num){
 			return (num / 1000).toFixed(2);
 		}
 	};
-
-
-
+	
+	
+	
 	var gameData = {
 		names: ['billy', 'bob', 'mark', 'randy', 'sheffer'],
 		turn : 0,
 		gameDurationMs : 0,
 		lives : 3,
 		timer : '',
-
+	
 		deleteAllOutlaws : function(){
 			var canvasChildren = canvas.domElement.children;
 			for(var ind = canvasChildren.length-1; ind > 0; ind-- ){
@@ -94,7 +94,7 @@
 				}
 			}
 		},
-
+	
 		resetGameData : function (){
 			points.killedTime = [];
 			opponents.dead = [];
@@ -107,7 +107,7 @@
 			gameData.deleteAllOutlaws();
 		}
 	};
-
+	
 	var opponents = {
 		alive: [],
 		dead : [],
@@ -117,7 +117,7 @@
 			var minTime = points.isHard ? 400 : 500;
 			var len = opponents.alive.length;
 			var skillValues = [];
-
+	
 			function getSkillTime() {
 				do{
 					var rndDiff = Math.round( ( (step / 100) * diffPercent * 2  * Math.random() ) - (step / 100) * diffPercent );
@@ -126,26 +126,26 @@
 				}while (skill < minTime);
 				return skill;
 			}
-
+	
 			for (; len > 0; len--) {
 				var currSkill = getSkillTime();
 				skillValues.push(currSkill);
 			}
-
+	
 			skillValues.sort(function(){
 				return Math.random() - 0.5;
 			});
-
+	
 			opponents.alive.forEach(function(opp, index){
 				opp.skill = skillValues[index];
 			});
 		},
-
+	
 		getRndName: function(){
 			var randNum = Math.floor( Math.random() * gameData.names.length );
 			return gameData.names[randNum];
 		},
-
+	
 		spawn: function(num){
 			var dimension = Math.round( 100 / num );
 			for (var i = 0, len = gameData.names.length, position = -dimension / 2; i < num; i++){
@@ -154,7 +154,7 @@
 				opponents.alive.push( new Opponent( name, position + '%' ));
 			}
 		},
-
+	
 		showSkills: function(){
 			setTimeout(function () {
 					opponents.alive.forEach( function(opp) {
@@ -167,7 +167,7 @@
 					});
 			}, 25);
 		},
-
+	
 		kill : function(killedOpp){
 			canvas.flick();
 			var newArr = [];
@@ -178,7 +178,7 @@
 			});
 			opponents.alive = newArr;
 		},
-
+	
 		getById : function (killedId) {
 			for (var i = opponents.alive.length; i > 0; i--){
 				if(opponents.alive[i-1].domElement.id == killedId){
@@ -186,22 +186,22 @@
 				}
 			}
 		},
-
+	
 		WaitThenDo : function(ms, action, sound){
 			setTimeout(function () {
 				opponents.alive.forEach(function(opp){
 					opp[action]();
 				});
-
+	
 				if (sound) {sounds.playNewStopOld(sound);}
 			}, ms);
 		},
 	};
-
-
-
-
-
+	
+	
+	
+	
+	
 	var gamePlay = {
 		checkIfInGame : function () {
 			var flag = true;
@@ -210,7 +210,7 @@
 			}
 			return flag;
 		},
-
+	
 		startGameTimer : function(){
 			gamePlay.timer = setTimeout(function tick() {
 					gameData.gameDurationMs += 10;
@@ -226,9 +226,9 @@
 							opp.gunmanSayDomElement.innerHTML = "You're dead";
 							opp.domElement.removeChild(opp.svgIcon);
 						});
-
+	
 						sounds.playOnTop('shoot');
-
+	
 						canvas.red();
 						canvas.domElement.removeEventListener('click', gamePlay.shootPhase, true);
 						opponents.alive[opponents.alive.length - 1].domElement.removeEventListener('transitionend', startGame);
@@ -236,7 +236,7 @@
 						opponents.WaitThenDo(3500, 'walkOut');
 						opponents.alive[opponents.alive.length - 1].domElement.addEventListener('transitionend', newRound);
 					}
-
+	
 					else{
 						if (opponents.alive.length === 0) {
 							console.log('you win!');
@@ -258,21 +258,21 @@
 					}
 			}, 10);
 		},
-
-
+	
+	
 		shootPhase : function (e) {
 			e.stopPropagation();
-
+	
 			sounds.playOnTop('shoot');
-
-
+	
+	
 			if (!gameData.gameDurationMs) {
 				gamePlay.foul();
 			} else if (e.target.id == "Head" ||
 					   e.target.id == "Arm" ||
 					   e.target.id == "Belly" ||
 					   e.target.id == "Leg") {
-
+	
 				var killedDOMEl = e.target.parentNode.parentNode.parentNode;
 				var killedOpponent = opponents.getById(killedDOMEl.id);
 				killedOpponent.killingTime = gameData.gameDurationMs + 10;
@@ -288,8 +288,8 @@
 				}
 			 }
 		},
-
-
+	
+	
 		foul : function(){
 			clearTimeout(gameData.timer);
 			gamePlay.foulState = true;
@@ -304,25 +304,25 @@
 				opp.domElement.style.left = opp.startPosition;
 				opponents.WaitThenDo(10, 'walkOut', 'foul'); //'foul'
 			});
-
+	
 			gameData.lives--;
 			canvas.livesEl.innerHTML = 'Lives ' + gameData.lives;
-
+	
 			opponents.alive[opponents.alive.length - 1].domElement.addEventListener('transitionend', newRound);
 			gamePlay.foulState = false;
-
+	
 		},
-
+	
 		foulState : false,
-
+	
 		updateScore : function(){
-
+	
 			function waitAndPrint(deadOpp){
 				setTimeout(function () {
 					deadOpp.skillEl.innerHTML = '<strike>' + helpers.parseNum(deadOpp.skill) + '</strike>' +
 												'<br>' + helpers.parseNum(deadOpp.killingTime);
 					deadOpp.killingTime += 10;
-
+	
 					if (deadOpp.killingTime <= deadOpp.skill) {
 						points.amount += 1;
 						points.printPoints();
@@ -330,8 +330,8 @@
 						waitAndPrint(deadOpp);
 					} else {
 						// sounds.bonusPoint.pause();
-
-
+	
+	
 						deadOpp.gunmanSayDomElement.classList.add('blinkBodyPartsScore');
 						sounds.playOnTop('cashRegister');
 						setTimeout(function () {
@@ -341,59 +341,59 @@
 					}
 				}, 20);
 			}
-
+	
 			function callScoringSuccessively() {
 				last--;
-
+	
 				if (opponents.dead[last]) {
 					setTimeout(function () {
 						waitAndPrint(opponents.dead[last]);
 						// sounds.bonusPoint.play();
-
-
+	
+	
 					}, 500);
 				} else {
 					setTimeout(newRound , 2000);
 				}
 			}
-
+	
 			var last = opponents.dead.length;
 			callScoringSuccessively();
 		},
-
+	
 		optionsPanel : function(){
-
+	
 			canvas.domElement.style.cursor = 'default';
 			console.log('options');
 			canvas.chooseOptions();
 			points.isHard = true;
-
+	
 			var optionsEl = document.querySelector('#options');
 			optionsEl.innerHTML = __webpack_require__(19);
 			canvas.domElement.appendChild(optionsEl);
-
+	
 			var highscoreEl = document.querySelector('#highscoreEl');
 			highscoreEl.innerHTML = 'Highscore: ' + (points.isHard ? points.addNulls(localStorage.highScoreHard)
 																	: points.addNulls(localStorage.highScoreEasy));
-
+	
 			var difficultyEl = document.querySelector('#difficultyEl');
-
+	
 			difficultyEl.addEventListener('change', function(){
 				sounds.playOnTop('weapon');
 				points.isHard = difficultyEl.checked;
 				highscoreEl.innerHTML = 'Highscore: ' + (points.isHard ? points.addNulls(localStorage.highScoreHard)
 																		: points.addNulls(localStorage.highScoreEasy));
 			});
-
+	
 			var startNewGameButton = document.querySelector('#startNewGame');
-
+	
 			gameData.deleteAllOutlaws();
 			canvas.hideInfo();
 			optionsEl.style.visibility = 'visible';
-
+	
 			startNewGameButton.addEventListener('click', function(){
 				sounds.playOnTop('reload');
-
+	
 				setTimeout(function () {
 					canvas.showInfo();
 					points.amount = 0;
@@ -405,7 +405,7 @@
 					newRound();
 				}, 400);
 			});
-
+	
 			var aboutEl = document.querySelector('#about');
 			aboutEl.addEventListener('click', function(){
 				sounds.playOnTop('weapon');
@@ -416,75 +416,75 @@
 					sounds.playOnTop('weapon');
 					helpers.removeAllChildren(optionsEl);
 					gamePlay.optionsPanel();
-
+	
 				});
-
+	
 			});
-
-
+	
+	
 		}
 	};
-
+	
 	Opponent.prototype = {
 		init : function(){
 			this.domElement = document.createElement('div');
 			this.domElement.id = 'outlaw-' + (opponents.alive.length);
 			this.domElement.classList.add('shooter');
-
+	
 			this.startPosition = ( helpers.randomTrueOrFalse() ) ?
 					this.domElement.style.left = "-7%" :
 					this.domElement.style.left = "107%";
-
+	
 			canvas.domElement.appendChild(this.domElement);
 			this.gunmanSayDomElement = document.createElement('div');
 			this.gunmanSayDomElement.className = 'prompts';
 			this.domElement.appendChild(this.gunmanSayDomElement);
 		},
-
+	
 		switchClass : function (newClass){
 			this.domElement.className = 'shooter';
 			this.domElement.classList.add(newClass);
 		},
-
+	
 		addSVG : function (){
 			this.svgIcon = document.createElement('div');
 			this.svgIcon.innerHTML = __webpack_require__(21)("./" + this.name + '_inlineSVG.html');
 			this.domElement.appendChild(this.svgIcon);
 		},
-
+	
 		walkIn : function(){
 			this.domElement.style.left = this.position;
 			this.switchClass('icon-' + this.name + '-walk');
 		},
-
+	
 		walkOut : function(){
 			this.domElement.style.left = this.startPosition;
 			this.switchClass('icon-' + this.name + '-walk');
 			this.gunmanSayDomElement.style.visibility = 'hidden';
 		},
-
+	
 		stand : function(){
 			this.switchClass('icon-' + this.name + '-stand');
 		},
-
+	
 		unholster : function(){
 			this.switchClass('icon-' + this.name + '-unholster');
 		},
-
+	
 		aim : function(){
 			this.switchClass('icon-' + this.name + '-aim');
 			this.addSVG();
 			this.gunmanSayDomElement.innerHTML = 'Fire!';
 			this.gunmanSayDomElement.style.visibility = 'visible';
 		},
-
+	
 		fall : function(){
 			this.domElement.removeChild(this.svgIcon);
 			this.switchClass('icon-' + this.name + '-fall');
 			hatDomElement = document.createElement('div');
 			hatDomElement.className = 'hat icon-' + this.name + '-hat';
 			hatDomElement.style.top = "25%";
-
+	
 			if ( helpers.randomTrueOrFalse() ) {
 				hatDomElement.style.animationName = 'flying-hat-right';
 			} else {
@@ -492,12 +492,12 @@
 			}
 			this.domElement.appendChild(hatDomElement);
 		},
-
+	
 		talk : function(){
 			this.switchClass('icon-' + this.name + '-talk');
 		},
 	};
-
+	
 	function Opponent(name, position){
 		this.name = name;
 		this.skill = 0;
@@ -507,27 +507,27 @@
 		this.killedBodyPart = '';
 		this.init();
 	}
-
+	
 	function newRound(){
 		canvas.statElement.style.visibility = 'visible';
 		canvas.domElement.style.cursor = 'crosshair';
-
+	
 	 	if (gameData.lives !== 0)	 {
 			console.log('---------------------------');
 			console.log('Game turn', gameData.turn % gameData.names.length + 1);
 			gameData.resetGameData();
-
+	
 			opponents.spawn(gameData.turn % gameData.names.length + 1);
 			opponents.defineSkill();
 			opponents.alive[opponents.alive.length - 1].domElement.removeEventListener('transitionend', newRound);
 			opponents.showSkills();
-
+	
 			// each opponent perform action after the specified delay in ms
 			// and the last arg is music to play along
-
+	
 			opponents.WaitThenDo(10, 'walkIn', 'oneOutlawIntro'); //'oneOutlawIntro'
 			opponents.WaitThenDo(3600, 'stand'); //'prepareToShoot'
-
+	
 			// listen to the last opponent trasition (walk 3.5sec) to end
 			opponents.alive[opponents.alive.length - 1].domElement.addEventListener('transitionend', startGame);
 		}
@@ -535,11 +535,11 @@
 			opponents.alive[opponents.alive.length - 1].domElement.removeEventListener('transitionend', newRound);
 			console.log('game over!');
 			sounds.playNewStopOld('gameOver');
-
+	
 			canvas.winLose.innerHTML = 'Game over';
-
+	
 			points.highScore = points.isHard ? localStorage.highScoreHard : localStorage.highScoreEasy;
-
+	
 			if (points.highScore < points.amount){
 				if (points.isHard){
 					localStorage.highScoreHard = points.amount;
@@ -547,17 +547,17 @@
 					localStorage.highScoreEasy = points.amount;
 				}
 			}
-
+	
 			points.amount = 0;
 			setTimeout(function () {
 				gamePlay.optionsPanel();
 				sounds.playNewStopOld('prepareToPlay');
-
+	
 			}, 6000);
 		}
 	}
-
-
+	
+	
 	function startGame(){
 		//listen to shoot clik
 		sounds.playNewStopOld('prepareToShoot');
@@ -571,7 +571,7 @@
 			}
 		}, 2 * Math.floor( (1.5 + Math.random()) * 1000 ));
 	}
-
+	
 	gamePlay.optionsPanel();
 	sounds.playNewStopOld('prepareToPlay');
 
@@ -630,69 +630,69 @@
 		winLose: document.querySelector('#winLose'),
 		statElement: document.querySelector('#oppEndTimes'),
 		livesEl: document.querySelector('#lives'),
-
+	
 		hideInfo : function(){
 			var canvasChildren = canvas.domElement.children;
 			Array.prototype.forEach.call(canvasChildren, function(child){
 				child.style.visibility = 'hidden';
 			});
 		},
-
+	
 		showInfo: function(){
 			var canvasChildren = canvas.domElement.children;
 			Array.prototype.forEach.call(canvasChildren, function(child){
 				child.style.visibility = 'visible';
 			});
 		},
-
+	
 		chooseOptions : function(){
 			canvas.domElement.className = 'canvas canvas-options';
 		},
-
+	
 		red: function(){
 			canvas.domElement.className = 'canvas canvas-red';
 		},
-
+	
 		foul: function(){
 			canvas.domElement.className = 'canvas canvas-foul';
 		},
-
+	
 		flick: function(){
-
+	
 			var del = 65;
 			canvas.domElement.className = 'canvas canvas-white';
-
+	
 			setTimeout(function () {
 				canvas.domElement.className = 'canvas canvas-light';
 			}, del);
-
+	
 			setTimeout(function () {
 				canvas.domElement.className = 'canvas canvas-dark';
 			}, del*2);
-
+	
 			setTimeout(function () {
 				canvas.domElement.className = 'canvas canvas-light';
 			}, del*3);
-
+	
 			setTimeout(function () {
 				canvas.domElement.className = 'canvas canvas-dark';
 			}, del*4);
-
+	
 			setTimeout(function () {
 				canvas.domElement.className = 'canvas canvas-light';
 			}, del*5);
-
+	
 			setTimeout(function () {
 				canvas.domElement.className = 'canvas canvas-dark';
 			}, del*6);
-
+	
 			setTimeout(function () {
 				canvas.domElement.className = 'canvas canvas-light';
 			}, del*7);
 		}
 	};
-
-
+	
+	
 	module.exports = canvas;
 
 
@@ -701,28 +701,28 @@
 /***/ function(module, exports) {
 
 	var points = {
-
+	
 		myTimeDivElement : document.querySelector('#gameTime'),
 		pointsDomElement : document.querySelector('#points'),
 		amount: 0,
 		isHard: true,
-
+	
 		highScore: localStorage.highScoreEasy,
-
+	
 		Head: 20,
 		Belly: 15,
 		Arm: 5,
 		Leg: 5,
-
+	
 		updateBodyParts: function(part){
 			points.amount+= points[part];
 			points.printPoints();
 		},
-
+	
 		killedTime : [],
-
+	
 		resolveKilledTimePoints: function(){
-
+	
 			points.killedTime.forEach(function(pts){
 				var ppp = Math.round(pts / 50);
 				points.amount += ppp;
@@ -730,17 +730,17 @@
 			});
 			points.printPoints();
 		},
-
+	
 		addNulls: function(str){
 			var len = str.toString().length;
 			return '00000'.substring(0, 5 - len) + str;
 		},
-
+	
 		printPoints: function(){
 			points.pointsDomElement.innerHTML = 'Points ' + points.addNulls(points.amount);
 		}
 	};
-
+	
 	module.exports = points;
 
 
@@ -749,7 +749,7 @@
 /***/ function(module, exports) {
 
 	var sounds = {
-
+	
 		bonusPoint : new Audio('./src/sounds/bonus.mp3'),
 		fire : new Audio('./src/sounds/fire.mp3'),
 		foul : new Audio('./src/sounds/foul-muz.mp3'),
@@ -763,12 +763,12 @@
 		reload : new Audio('./src/sounds/reload.mp3'),
 		weapon : new Audio('./src/sounds/weapon.mp3'),
 		cashRegister : new Audio('./src/sounds/cash-register.mp3'),
-
+	
 		playOnTop : function(sfx){
 			sounds[sfx].currentTime = 0;
 			sounds[sfx].play();
 		},
-
+	
 		oldSfx : new Audio('./src/sounds/click.mp3'),
 		playNewStopOld : function(sfx) {
 			sounds.oldSfx.pause();
@@ -777,11 +777,11 @@
 			sounds[sfx].play();
 		},
 	};
-
+	
 	// sounds.bonusPoint.addEventListener('ended', function() {
 	// 	sounds.bonusPoint.play();
 	// }, false);
-
+	
 	sounds.bonusPoint.volume = 0.2;
 	module.exports = sounds;
 
