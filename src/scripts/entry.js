@@ -219,6 +219,7 @@ var gamePlay = {
 
 		sounds.playOnTop('shoot');
 
+
 		if (!gameData.gameDurationMs) {
 			gamePlay.foul();
 		} else if (e.target.id == "Head" ||
@@ -226,7 +227,7 @@ var gamePlay = {
 				   e.target.id == "Belly" ||
 				   e.target.id == "Leg") {
 
-			var killedDOMEl = e.target.parentElement.parentElement.parentElement;
+			var killedDOMEl = e.target.parentNode.parentNode.parentNode;
 			var killedOpponent = opponents.getById(killedDOMEl.id);
 			killedOpponent.killingTime = gameData.gameDurationMs + 10;
 			killedOpponent.killedBodyPart = e.target.id;
