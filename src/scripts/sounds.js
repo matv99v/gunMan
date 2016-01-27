@@ -1,6 +1,6 @@
 var sounds = {
 
-	bonusPoint : new Audio('./src/sounds/bonus.wav'),
+	bonusPoint : new Audio('./src/sounds/bonus.mp3'),
 	fire : new Audio('./src/sounds/fire.mp3'),
 	foul : new Audio('./src/sounds/foul-muz.mp3'),
 	gameOver : new Audio('./src/sounds/game-over.mp3'),
