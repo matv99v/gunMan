@@ -482,42 +482,13 @@ function newRound(){
 		opponents.alive[opponents.alive.length - 1].domElement.removeEventListener('transitionend', newRound);
 		opponents.showSkills();
 
-		// each opponent perform action after the specified delay in ms
-		// and the last arg is music to play along
-
-		// readyToStart = function (){
-			// opponents.WaitThenDo(10, 'stand', 'prepareToShoot');
-		// 	opponents.alive.forEach(function(opp){
-		// 		opp.stand();
-		// 	});
-		// 	sounds.playNewStopOld('prepareToShoot');
-		// 	startGame();
-		// };
-
-		// opponents.alive[opponents.alive.length - 1].domElement.addEventListener('transitionend', readyToStart);
-
-		// opponents.WaitThenDo(10, 'walkIn', 'oneOutlawIntro');
-
-		// setTimeout(function () {
-			sounds.playNewStopOld('oneOutlawIntro');
-			opponents.alive.forEach(function(opp){
-				opp.walkIn();
-
-			// }, 10);
-		});
-
-		setTimeout(function () {
-			sounds.playNewStopOld('prepareToShoot');
-			opponents.alive.forEach(function(opp){
-				opp.stand();
-			});
-
+		readyToStart = function (){
+			opponents.WaitThenDo(5, 'stand', 'prepareToShoot');
 			startGame();
-		}, 3600);
+		};
 
-
-
-
+		opponents.WaitThenDo(5, 'walkIn', 'oneOutlawIntro');
+		opponents.alive[opponents.alive.length - 1].domElement.addEventListener('transitionend', readyToStart);
 	}
 	else {
 		opponents.alive[opponents.alive.length - 1].domElement.removeEventListener('transitionend', newRound);
@@ -547,7 +518,7 @@ function newRound(){
 
 
 function startGame(){
-	// opponents.alive[opponents.alive.length - 1].domElement.removeEventListener('transitionend', readyToStart);
+	opponents.alive[opponents.alive.length - 1].domElement.removeEventListener('transitionend', readyToStart);
 
 	//listen to shoot clik
 	sounds.playNewStopOld('prepareToShoot');
