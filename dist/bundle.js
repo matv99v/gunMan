@@ -528,13 +528,10 @@
 			opponents.alive[opponents.alive.length - 1].domElement.removeEventListener('transitionend', newRound);
 			opponents.showSkills();
 	
-			readyToStart = function (){
-				opponents.WaitThenDo(5, 'stand', 'prepareToShoot');
-				startGame();
-			};
+			opponents.WaitThenDo(1, 'walkIn', 'oneOutlawIntro');
+			opponents.WaitThenDo(3600, 'stand');
+			opponents.alive[opponents.alive.length - 1].domElement.addEventListener('transitionend', startGame);
 	
-			opponents.WaitThenDo(5, 'walkIn', 'oneOutlawIntro');
-			opponents.alive[opponents.alive.length - 1].domElement.addEventListener('transitionend', readyToStart);
 		}
 		else {
 			opponents.alive[opponents.alive.length - 1].domElement.removeEventListener('transitionend', newRound);
@@ -564,8 +561,6 @@
 	
 	
 	function startGame(){
-		opponents.alive[opponents.alive.length - 1].domElement.removeEventListener('transitionend', readyToStart);
-	
 		//listen to shoot clik
 		sounds.playNewStopOld('prepareToShoot');
 		canvas.domElement.addEventListener('click', gamePlay.shootPhase, true);
