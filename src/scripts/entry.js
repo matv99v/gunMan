@@ -498,12 +498,12 @@ function newRound(){
 
 		// opponents.WaitThenDo(10, 'walkIn', 'oneOutlawIntro');
 
-		setTimeout(function () {
+		// setTimeout(function () {
 			sounds.playNewStopOld('oneOutlawIntro');
 			opponents.alive.forEach(function(opp){
 				opp.walkIn();
 
-			}, 10);
+			// }, 10);
 		});
 
 		setTimeout(function () {
