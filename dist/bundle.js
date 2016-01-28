@@ -526,12 +526,12 @@
 			opponents.spawn(gameData.turn % gameData.names.length + 1);
 			opponents.defineSkill();
 			opponents.alive[opponents.alive.length - 1].domElement.removeEventListener('transitionend', newRound);
-			opponents.showSkills();
 	
 			setTimeout(function () {
 				opponents.WaitThenDo(1, 'walkIn', 'oneOutlawIntro');
 				opponents.WaitThenDo(3600, 'stand');
 				opponents.alive[opponents.alive.length - 1].domElement.addEventListener('transitionend', startGame);
+				opponents.showSkills();
 			}, 100);
 	
 	
