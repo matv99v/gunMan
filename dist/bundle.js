@@ -549,12 +549,15 @@
 				opp.walkIn();
 			});
 	
-			sounds.playNewStopOld('prepareToShoot');
-			opponents.alive.forEach(function(opp){
-				opp.stand();
-			});
+			setTimeout(function () {
+				sounds.playNewStopOld('prepareToShoot');
+				opponents.alive.forEach(function(opp){
+					opp.stand();
+				});
 	
-			startGame();
+				startGame();
+			}, 3600);
+	
 	
 	
 	
