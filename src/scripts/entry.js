@@ -200,7 +200,7 @@ var gamePlay = {
 					});
 
 					sounds.playNewStopOld('youLost');
-					
+
 					opponents.WaitThenDo(3500, 'walkOut');
 					opponents.alive[opponents.alive.length - 1].domElement.addEventListener('transitionend', newRound);
 				}
@@ -485,18 +485,31 @@ function newRound(){
 		// each opponent perform action after the specified delay in ms
 		// and the last arg is music to play along
 
-		readyToStart = function (){
+		// readyToStart = function (){
 			// opponents.WaitThenDo(10, 'stand', 'prepareToShoot');
-			opponents.alive.forEach(function(opp){
-				opp.stand();
-			});
-			sounds.playNewStopOld('prepareToShoot');
-			startGame();
-		};
+		// 	opponents.alive.forEach(function(opp){
+		// 		opp.stand();
+		// 	});
+		// 	sounds.playNewStopOld('prepareToShoot');
+		// 	startGame();
+		// };
 
-		opponents.alive[opponents.alive.length - 1].domElement.addEventListener('transitionend', readyToStart);
+		// opponents.alive[opponents.alive.length - 1].domElement.addEventListener('transitionend', readyToStart);
 
-		opponents.WaitThenDo(10, 'walkIn', 'oneOutlawIntro');
+		// opponents.WaitThenDo(10, 'walkIn', 'oneOutlawIntro');
+
+		sounds.playNewStopOld('oneOutlawIntro');
+		opponents.alive.forEach(function(opp){
+			opp.walkIn();
+		});
+
+		sounds.playNewStopOld('prepareToShoot');
+		opponents.alive.forEach(function(opp){
+			opp.stand();
+		});
+		
+		startGame();
+
 
 
 	}
