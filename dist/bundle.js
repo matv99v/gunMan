@@ -525,7 +525,11 @@
 			// and the last arg is music to play along
 	
 			readyToStart = function (){
-				opponents.WaitThenDo(1, 'stand', 'prepareToShoot');
+				// opponents.WaitThenDo(10, 'stand', 'prepareToShoot');
+				opponents.alive.forEach(function(opp){
+					opp.stand();
+				});
+				sounds.playNewStopOld('prepareToShoot');
 				startGame();
 			};
 	
