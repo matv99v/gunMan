@@ -127,7 +127,9 @@
         height: 150px;
     }
 	100% {
-        background-position: calc(-986px + 24px) 0px;
+        /*background-position: calc(-986px + 24px) 0px;*/
+        background-position: -962px 0px;
+
         width: 74px;
         height: 150px;
     }
@@ -212,7 +214,8 @@
         background-position: -2328px 0px;
     }
 	100% {
-        background-position: calc(-2172px + 4px) 0px;
+        /*background-position: calc(-2172px + 4px) 0px;*/
+        background-position: -2168px 0px;
     }
 }
 
