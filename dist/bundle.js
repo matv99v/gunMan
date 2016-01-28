@@ -239,7 +239,14 @@
 						canvas.red();
 						canvas.domElement.removeEventListener('click', gamePlay.shootPhase, true);
 						opponents.alive[opponents.alive.length - 1].domElement.removeEventListener('transitionend', startGame);
-						opponents.WaitThenDo(10, 'talk', 'youLost');
+						// opponents.WaitThenDo(10, 'talk', 'youLost');
+	
+						opponents.alive.forEach(function(opp){
+							opp.talk();
+						});
+	
+						sounds.playNewStopOld('youLost');
+						
 						opponents.WaitThenDo(3500, 'walkOut');
 						opponents.alive[opponents.alive.length - 1].domElement.addEventListener('transitionend', newRound);
 					}
