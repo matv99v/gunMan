@@ -524,13 +524,12 @@
 			// each opponent perform action after the specified delay in ms
 			// and the last arg is music to play along
 	
-			opponents.alive[opponents.alive.length - 1].domElement.addEventListener('transitionend', readyToStart);
-	
-	
 			readyToStart = function (){
 				opponents.WaitThenDo(1, 'stand', 'prepareToShoot');
 				startGame();
 			};
+	
+			opponents.alive[opponents.alive.length - 1].domElement.addEventListener('transitionend', readyToStart);
 	
 			opponents.WaitThenDo(10, 'walkIn', 'oneOutlawIntro');
 	
