@@ -1,3 +1,7 @@
+//sounds object consisnts of sounds and two methods for play them
+//playNewStopOld stops the previous sound and plays new one one
+//playOnTop method plays sound on top of another sound (for example music)
+
 var sounds = {
 
 	bonusPoint : new Audio('./src/sounds/bonus.mp3'),
@@ -27,10 +31,6 @@ var sounds = {
 		sounds[sfx].play();
 	},
 };
-
-// sounds.bonusPoint.addEventListener('ended', function() {
-// 	sounds.bonusPoint.play();
-// }, false);
 
 sounds.bonusPoint.volume = 0.2;
 module.exports = sounds;

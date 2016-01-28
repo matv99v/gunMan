@@ -1,3 +1,6 @@
+// canvas object describes main game window element and its methods
+
+
 var canvas = {
 	domElement: document.querySelector('#canvas'),
 	winLose: document.querySelector('#winLose'),

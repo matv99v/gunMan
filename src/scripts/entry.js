@@ -1,3 +1,5 @@
+//main js file for GunMan game
+
 require('../styles/mainStyles.scss');
 require('../styles/sprite-base.css');
 require('../styles/animation.css');
@@ -9,36 +11,38 @@ var canvas = require('./canvas.js');
 var points = require('./points.js');
 var sounds = require('./sounds.js');
 
-
+//Store local high scores
 // localStorage.clear();
-if (!localStorage.highScoreEasy){ localStorage.highScoreEasy = 0; }
-if (!localStorage.highScoreHard){ localStorage.highScoreHard = 0; }
 
+if (!localStorage.highScoreEasy){
+	localStorage.highScoreEasy = 0;
+}
 
-var helpers = {
+if (!localStorage.highScoreHard){
+	localStorage.highScoreHard = 0;
+}
+
+var helpers = { // helper functions
 	randomTrueOrFalse : function(){
 		return ((Math.random() - 0.5) < 0) ? false : true;
 	},
 	removeAllChildren : function(domElement){
-
 		while (domElement.firstChild) {
 			domElement.removeChild(domElement.firstChild);
 		}
 	},
-
 	parseNum : function(num){
 		return (num / 1000).toFixed(2);
 	}
 };
 
-
-
-var gameData = {
+var gameData = {   // main game variables and methods for reseting them
 	names: ['billy', 'bob', 'mark', 'randy', 'sheffer'],
 	turn : 0,
 	gameDurationMs : 0,
 	lives : 3,
 	timer : '',
+	foulState : false,
 
 	deleteAllOutlaws : function(){
 		var canvasChildren = canvas.domElement.children;
@@ -62,9 +66,10 @@ var gameData = {
 	}
 };
 
-var opponents = {
+var opponents = {  //describes opponents in current round
 	alive: [],
 	dead : [],
+
 	defineSkill : function(){
 		var step = points.isHard ? 500 : 750;
 		var diffPercent = points.isHard ? 50 : 25;
@@ -74,7 +79,8 @@ var opponents = {
 
 		function getSkillTime() {
 			do{
-				var rndDiff = Math.round( ( (step / 100) * diffPercent * 2  * Math.random() ) - (step / 100) * diffPercent );
+				var rndDiff = Math.round( ( (step / 100) * diffPercent * 2  *
+							  Math.random() ) - (step / 100) * diffPercent );
 				rndDiff = Math.floor(rndDiff / 10 ) * 10;
 				var skill = step * len + rndDiff;
 			}while (skill < minTime);
@@ -100,7 +106,7 @@ var opponents = {
 		return gameData.names[randNum];
 	},
 
-	spawn: function(num){
+	spawn: function(num){  //spawn new opponent
 		var dimension = Math.round( 100 / num );
 		for (var i = 0, len = gameData.names.length, position = -dimension / 2; i < num; i++){
 			var name = gameData.names[ i % len ];
@@ -141,6 +147,8 @@ var opponents = {
 		}
 	},
 
+//WaitThenDo method delays action of an opponent in ms and plays sound if passed in
+
 	WaitThenDo : function(ms, action, sound){
 		setTimeout(function () {
 			opponents.alive.forEach(function(opp){
@@ -152,12 +160,10 @@ var opponents = {
 	},
 };
 
-
-
-
+//gamePlay object consisnts of gameplay methods and describes game actions
 
 var gamePlay = {
-	checkIfInGame : function () {
+	checkIfInGame : function () {  //checks if alive opponents time to shoot
 		var flag = true;
 		for (i = opponents.alive.length - 1; i >= 0; i--){
 			 flag = flag && (gameData.gameDurationMs < opponents.alive[i].skill);
@@ -165,11 +171,12 @@ var gamePlay = {
 		return flag;
 	},
 
-	startGameTimer : function(){
+	startGameTimer : function(){  //main game phase when timer starts
 		gamePlay.timer = setTimeout(function tick() {
 				gameData.gameDurationMs += 10;
 				points.myTimeDivElement.innerHTML = 'Time ' + helpers.parseNum(gameData.gameDurationMs);
-				if ( !gamePlay.checkIfInGame() && !gamePlay.foulState ) {
+
+				if ( !gamePlay.checkIfInGame() && !gameData.foulState ) { //your time expired, you've been shoot
 					clearTimeout(gamePlay.timer);
 					console.log('You lose!');
 					gameData.lives--;
@@ -177,7 +184,7 @@ var gamePlay = {
 					canvas.winLose.style.visibility = 'visible';
 					canvas.winLose.innerHTML = 'You lose!';
 					opponents.alive.forEach(function(opp){
-						opp.gunmanSayDomElement.innerHTML = "You're dead";
+						opp.gunmanSayDomElement.innerHTML = 'You\'re dead';
 						opp.domElement.removeChild(opp.svgIcon);
 					});
 
@@ -192,7 +199,7 @@ var gamePlay = {
 				}
 
 				else{
-					if (opponents.alive.length === 0) {
+					if (opponents.alive.length === 0) {  //you killed all opponents
 						console.log('you win!');
 						points.resolveKilledTimePoints();
 						canvas.winLose.style.visibility = 'visible';
@@ -206,47 +213,44 @@ var gamePlay = {
 						gameData.turn += 1;
 						setTimeout(gamePlay.updateScore, 1500);
 					}
-					else {
+					else {  // continue next timer count
 						gamePlay.timer = setTimeout(tick, 10);
 					}
 				}
 		}, 10);
 	},
 
-
-	shootPhase : function (e) {
+	shootPhase : function (e) { //detects the mouse click (the user's shoot )
 		e.stopPropagation();
-
 		sounds.playOnTop('shoot');
 
-
-		if (!gameData.gameDurationMs) {
+		if (!gameData.gameDurationMs) {  //checks if there is foul state (user shoot before timer starts)
 			gamePlay.foul();
-		} else if (e.target.id == "Head" ||
-				   e.target.id == "Arm" ||
-				   e.target.id == "Belly" ||
-				   e.target.id == "Leg") {
+		} else if (e.target.id == 'Head' ||  //detects the clicked bode part element
+				   e.target.id == 'Arm' ||
+				   e.target.id == 'Belly' ||
+				   e.target.id == 'Leg') {
 
-			var killedDOMEl = e.target.parentNode.parentNode.parentNode;
+			var killedDOMEl = e.target.parentNode.parentNode.parentNode;  //detects the shot dom element
 			var killedOpponent = opponents.getById(killedDOMEl.id);
 			killedOpponent.killingTime = gameData.gameDurationMs + 10;
 			killedOpponent.killedBodyPart = e.target.id;
 			opponents.dead.push(killedOpponent);
-			killedOpponent.gunmanSayDomElement.innerHTML = killedOpponent.killedBodyPart + ' ' + points[killedOpponent.killedBodyPart] + ' pts';
-			console.log('you hit ' + killedOpponent.name + "'s " +  killedOpponent.killedBodyPart);
-			killedOpponent.skillEl.innerHTML = '<strike>' + killedOpponent.skillEl.innerHTML + '</strike><br>' + helpers.parseNum(killedOpponent.killingTime) ;
+			killedOpponent.gunmanSayDomElement.innerHTML = killedOpponent.killedBodyPart +
+			 						' ' + points[killedOpponent.killedBodyPart] + ' pts';
+			console.log('you hit ' + killedOpponent.name + '\'s ' +  killedOpponent.killedBodyPart);
+			killedOpponent.skillEl.innerHTML = '<strike>' +
+												killedOpponent.skillEl.innerHTML +
+												'</strike><br>' +
+												helpers.parseNum(killedOpponent.killingTime);
 			opponents.kill(killedOpponent);
 			killedOpponent.fall();
-			if (opponents.alive.length === 0) {
-				var endTime = Date.now();
-			}
-		 }
+		}
 	},
-
 
 	foul : function(){
 		clearTimeout(gameData.timer);
-		gamePlay.foulState = true;
+		gameData.foulState = true;
 		console.log('foul');
 		clearTimeout(gamePlay.startGameTimer);
 		canvas.foul();
@@ -254,20 +258,18 @@ var gamePlay = {
 		canvas.winLose.innerHTML = 'Foul';
 		canvas.domElement.removeEventListener('click', gamePlay.shootPhase, true);
 		opponents.alive[opponents.alive.length - 1].domElement.removeEventListener('transitionend', startGame);
+
 		opponents.alive.forEach(function(opp){
 			opp.domElement.style.left = opp.startPosition;
-			opponents.WaitThenDo(10, 'walkOut', 'foul'); //'foul'
+			opponents.WaitThenDo(10, 'walkOut', 'foul');
 		});
 
 		gameData.lives--;
 		canvas.livesEl.innerHTML = 'Lives ' + gameData.lives;
 
 		opponents.alive[opponents.alive.length - 1].domElement.addEventListener('transitionend', newRound);
-		gamePlay.foulState = false;
-
+		gameData.foulState = false;
 	},
-
-	foulState : false,
 
 	updateScore : function(){
 
@@ -283,9 +285,6 @@ var gamePlay = {
 					sounds.playNewStopOld('bonusPoint');
 					waitAndPrint(deadOpp);
 				} else {
-					// sounds.bonusPoint.pause();
-
-
 					deadOpp.gunmanSayDomElement.classList.add('blinkBodyPartsScore');
 					sounds.playOnTop('cashRegister');
 					setTimeout(function () {
@@ -386,8 +385,8 @@ Opponent.prototype = {
 		this.domElement.classList.add('shooter');
 
 		this.startPosition = ( helpers.randomTrueOrFalse() ) ?
-				this.domElement.style.left = "-7%" :
-				this.domElement.style.left = "107%";
+				this.domElement.style.left = '-7%' :
+				this.domElement.style.left = '107%';
 
 		canvas.domElement.appendChild(this.domElement);
 		this.gunmanSayDomElement = document.createElement('div');
@@ -437,7 +436,7 @@ Opponent.prototype = {
 		this.switchClass('icon-' + this.name + '-fall');
 		hatDomElement = document.createElement('div');
 		hatDomElement.className = 'hat icon-' + this.name + '-hat';
-		hatDomElement.style.top = "25%";
+		hatDomElement.style.top = '25%';
 
 		if ( helpers.randomTrueOrFalse() ) {
 			hatDomElement.style.animationName = 'flying-hat-right';
@@ -518,7 +517,7 @@ function startGame(){
 	canvas.domElement.addEventListener('click', gamePlay.shootPhase, true);
 	// pause before shooting
 	gameData.timer = setTimeout(function () {
-		if (!gamePlay.foulState) {		//checks if there is no foul
+		if (!gameData.foulState) {		//checks if there is no foul
 			gamePlay.startGameTimer();
 			opponents.WaitThenDo(1, 'unholster');
 			opponents.WaitThenDo(150, 'aim', 'fire');
