@@ -553,7 +553,7 @@
 			opponents.alive.forEach(function(opp){
 				opp.stand();
 			});
-			
+	
 			startGame();
 	
 	
@@ -587,7 +587,7 @@
 	
 	
 	function startGame(){
-		opponents.alive[opponents.alive.length - 1].domElement.removeEventListener('transitionend', readyToStart);
+		// opponents.alive[opponents.alive.length - 1].domElement.removeEventListener('transitionend', readyToStart);
 	
 		//listen to shoot clik
 		sounds.playNewStopOld('prepareToShoot');
