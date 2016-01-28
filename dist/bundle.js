@@ -528,18 +528,19 @@
 			opponents.alive[opponents.alive.length - 1].domElement.removeEventListener('transitionend', newRound);
 			opponents.showSkills();
 	
-			opponents.WaitThenDo(1, 'walkIn', 'oneOutlawIntro');
-			opponents.WaitThenDo(3600, 'stand');
-			opponents.alive[opponents.alive.length - 1].domElement.addEventListener('transitionend', startGame);
+			setTimeout(function () {
+				opponents.WaitThenDo(1, 'walkIn', 'oneOutlawIntro');
+				opponents.WaitThenDo(3600, 'stand');
+				opponents.alive[opponents.alive.length - 1].domElement.addEventListener('transitionend', startGame);
+			}, 100);
+	
 	
 		}
 		else {
 			opponents.alive[opponents.alive.length - 1].domElement.removeEventListener('transitionend', newRound);
 			console.log('game over!');
 			sounds.playNewStopOld('gameOver');
-	
 			canvas.winLose.innerHTML = 'Game over';
-	
 			points.highScore = points.isHard ? localStorage.highScoreHard : localStorage.highScoreEasy;
 	
 			if (points.highScore < points.amount){
